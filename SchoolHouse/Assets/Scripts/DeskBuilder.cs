@@ -31,13 +31,13 @@ public class DeskBuilder : MonoBehaviour
     }
 
     // Change position and rotation of desk
-    public void UpdateDeskPosition(Transform PositionReference)
+    public void UpdateDeskPosition(Vector3 PositionReference, float Yrotation)
     {
         // Change desk position
-        transform.position = new Vector3(PositionReference.transform.position.x, PositionReference.transform.position.y, PositionReference.transform.position.z);
+        transform.position = new Vector3(PositionReference.x, PositionReference.y, PositionReference.z);
 
         // Define desk rotation value
-        Vector3 DeskRotation = new Vector3(0, PositionReference.eulerAngles.y, 0);
+        Vector3 DeskRotation = new Vector3(0, Yrotation, 0);
 
         // Change desk rotation
         transform.rotation = Quaternion.Euler(DeskRotation);
@@ -46,18 +46,18 @@ public class DeskBuilder : MonoBehaviour
     }
 
     // Change desk height
-    public void UpdateDeskHeight(Transform PositionReference)
+    public void UpdateDeskHeight(Vector3 PositionReference)
     {
         // Change desk height only changing Y value
-        transform.position = new Vector3(transform.position.x, PositionReference.transform.position.y, transform.position.z);
+        transform.position = new Vector3(transform.position.x, PositionReference.y, transform.position.z);
 
         PlaceLegs();
     }
 
-    public void UpdateDeskRight(Transform PositionReference)
+    public void UpdateDeskRight(Vector3 PositionReference)
     {
         // Get Vector from the controller reference position to the centre of the table
-        Vector3 DirectionRight = new Vector3(PositionReference.transform.position.x, 0, PositionReference.transform.position.z) - new Vector3(DeskTop.transform.position.x, 0, DeskTop.transform.position.z);
+        Vector3 DirectionRight = new Vector3(PositionReference.x, 0, PositionReference.z) - new Vector3(DeskTop.transform.position.x, 0, DeskTop.transform.position.z);
 
         // Calculate length of Vector
         DirectionLengthRight = DirectionRight.magnitude;
@@ -81,10 +81,10 @@ public class DeskBuilder : MonoBehaviour
         PlaceLegs();
     }
 
-    public void UpdateDeskLeft(Transform PositionReference)
+    public void UpdateDeskLeft(Vector3 PositionReference)
     {
         // Get Vector from the controller reference position to the centre of the table
-        Vector3 DirectionLeft = new Vector3(PositionReference.transform.position.x, 0, PositionReference.transform.position.z) - new Vector3(DeskTop.transform.position.x, 0, DeskTop.transform.position.z);
+        Vector3 DirectionLeft = new Vector3(PositionReference.x, 0, PositionReference.z) - new Vector3(DeskTop.transform.position.x, 0, DeskTop.transform.position.z);
 
         // Calculate length of Vector
         DirectionLengthLeft = DirectionLeft.magnitude;
@@ -108,10 +108,10 @@ public class DeskBuilder : MonoBehaviour
         PlaceLegs();
     }
 
-    public void UpdateDeskBack(Transform PositionReference)
+    public void UpdateDeskBack(Vector3 PositionReference)
     {
         // Get Vector from the controller reference position to the centre of the table
-        Vector3 DirectionBack = new Vector3(PositionReference.transform.position.x, 0, PositionReference.transform.position.z) - new Vector3(DeskTop.transform.position.x, 0, DeskTop.transform.position.z);
+        Vector3 DirectionBack = new Vector3(PositionReference.x, 0, PositionReference.z) - new Vector3(DeskTop.transform.position.x, 0, DeskTop.transform.position.z);
 
         // Calculate length of Vector
         DirectionLengthBack = DirectionBack.magnitude;

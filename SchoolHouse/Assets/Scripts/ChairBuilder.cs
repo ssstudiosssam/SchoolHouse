@@ -38,13 +38,13 @@ public class ChairBuilder : MonoBehaviour
     }
 
     // Change position and rotation of chair
-    public void UpdateChairPosition(Transform PositionReference)
+    public void UpdateChairPosition(Vector3 PositionReference, float Yrotation)
     {
         // Change chair position
-        transform.position = new Vector3(PositionReference.transform.position.x, PositionReference.transform.position.y, PositionReference.transform.position.z);
+        transform.position = new Vector3(PositionReference.x, PositionReference.y, PositionReference.z);
 
         // Define chair rotation value
-        Vector3 ChairRotation = new Vector3(0, PositionReference.eulerAngles.y, 0);
+        Vector3 ChairRotation = new Vector3(0, Yrotation, 0);
 
         // Change chair rotation
         transform.rotation = Quaternion.Euler(ChairRotation);
@@ -53,18 +53,18 @@ public class ChairBuilder : MonoBehaviour
     }
 
     // Change chair height
-    public void UpdateChairHeight(Transform PositionReference)
+    public void UpdateChairHeight(Vector3 PositionReference)
     {
         // Change chair height only changing Y value
-        transform.position = new Vector3(transform.position.x, PositionReference.transform.position.y, transform.position.z);
+        transform.position = new Vector3(transform.position.x, PositionReference.y, transform.position.z);
 
         PlaceLegs();
     }
 
-    public void UpdateChairRight(Transform PositionReference)
+    public void UpdateChairRight(Vector3 PositionReference)
     {
         // Get Vector from the controller reference position to the centre of the chair
-        Vector3 DirectionRight = new Vector3(PositionReference.transform.position.x, 0, PositionReference.transform.position.z) - new Vector3(ChairTop.transform.position.x, 0, ChairTop.transform.position.z);
+        Vector3 DirectionRight = new Vector3(PositionReference.x, 0, PositionReference.z) - new Vector3(ChairTop.transform.position.x, 0, ChairTop.transform.position.z);
 
         // Calculate length of Vector
         DirectionLengthRight = DirectionRight.magnitude;
@@ -92,10 +92,10 @@ public class ChairBuilder : MonoBehaviour
         PlaceLegs();
     }
 
-    public void UpdateChairLeft(Transform PositionReference)
+    public void UpdateChairLeft(Vector3 PositionReference)
     {
         // Get Vector from the controller reference position to the centre of the chair
-        Vector3 DirectionLeft = new Vector3(PositionReference.transform.position.x, 0, PositionReference.transform.position.z) - new Vector3(ChairTop.transform.position.x, 0, ChairTop.transform.position.z);
+        Vector3 DirectionLeft = new Vector3(PositionReference.x, 0, PositionReference.z) - new Vector3(ChairTop.transform.position.x, 0, ChairTop.transform.position.z);
 
         // Calculate length of Vector
         DirectionLengthLeft = DirectionLeft.magnitude;
@@ -123,10 +123,10 @@ public class ChairBuilder : MonoBehaviour
         PlaceLegs();
     }
 
-    public void UpdateChairBack(Transform PositionReference)
+    public void UpdateChairBack(Vector3 PositionReference)
     {
         // Get Vector from the controller reference position to the centre of the chair
-        Vector3 DirectionBack = new Vector3(PositionReference.transform.position.x, 0, PositionReference.transform.position.z) - new Vector3(ChairTop.transform.position.x, 0, ChairTop.transform.position.z);
+        Vector3 DirectionBack = new Vector3(PositionReference.x, 0, PositionReference.z) - new Vector3(ChairTop.transform.position.x, 0, ChairTop.transform.position.z);
 
         // Calculate length of Vector
         DirectionLengthBack = DirectionBack.magnitude;
@@ -152,10 +152,10 @@ public class ChairBuilder : MonoBehaviour
         PlaceLegs();
     }
 
-    public void UpdateChairBackHeight(Transform PositionReference)
+    public void UpdateChairBackHeight(Vector3 PositionReference)
     {
         // Get Vector from the controller reference position to the centre of the back of the chair
-        Vector3 DirectionUp = new Vector3(0, PositionReference.transform.position.y, 0) - new Vector3(0, ChairBackSurface.transform.position.y, 0);
+        Vector3 DirectionUp = new Vector3(0, PositionReference.y, 0) - new Vector3(0, ChairBackSurface.transform.position.y, 0);
 
         // Calculate length of Vector
         DirectionLengthUp = DirectionUp.magnitude;
