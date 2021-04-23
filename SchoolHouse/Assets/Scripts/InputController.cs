@@ -31,6 +31,8 @@ public class InputController : MonoBehaviour
 
     public Button LoadButton;
 
+    public GameObject Content1;
+
     // Wall values
     private float WallYrot;
     private Vector3 WallPosition;
@@ -298,11 +300,15 @@ public class InputController : MonoBehaviour
                 CombineScene();
 
                 PlayerPrefs.SetInt("IsSavedData", 1);
+                Content1.SetActive(true);
+                LaserPointer.SetActive(true);
             }
 
             if (BuildStage > 11 && Building == true)
             {
                 ResetGlobalPosition();
+                LaserPointer.SetActive(true);
+                Content1.SetActive(true);
             }
 
             if (Building == true)
