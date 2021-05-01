@@ -79,14 +79,14 @@ public class ChairBuilder : MonoBehaviour
         AddedLengthRight = DirectionLengthRight * Mathf.Cos((RightAngle * Mathf.Deg2Rad));
 
         // Add required length
-        ChairSurface.transform.localScale = new Vector3(AddedLengthRight + 0.5f, ChairSurface.transform.localScale.y, ChairSurface.transform.localScale.z);
+        ChairSurface.transform.localScale = new Vector3(AddedLengthRight + 0.25f, ChairSurface.transform.localScale.y, ChairSurface.transform.localScale.z);
 
-        ChairBackSurface.transform.localScale = new Vector3(AddedLengthRight + 0.5f, ChairBackSurface.transform.localScale.y, ChairBackSurface.transform.localScale.z);
+        ChairBackSurface.transform.localScale = new Vector3(AddedLengthRight + 0.25f, ChairBackSurface.transform.localScale.y, ChairBackSurface.transform.localScale.z);
 
         // Move chair into position after length is added
-        ChairSurface.transform.localPosition += new Vector3((AddedLengthRight / 2) - 0.25f, 0, 0);
+        ChairSurface.transform.localPosition += new Vector3((AddedLengthRight / 2) - 0.125f, 0, 0);
 
-        ChairBackSurface.transform.localPosition += new Vector3((AddedLengthRight / 2) - 0.25f, 0, 0);
+        ChairBackSurface.transform.localPosition += new Vector3((AddedLengthRight / 2) - 0.125f, 0, 0);
 
         UpdateTexture();
         PlaceLegs();
@@ -115,9 +115,9 @@ public class ChairBuilder : MonoBehaviour
         ChairBackSurface.transform.localScale = new Vector3(AddedLengthLeft + AddedLengthRight, ChairBackSurface.transform.localScale.y, ChairBackSurface.transform.localScale.z);
 
         // Move chair into position after length is added
-        ChairSurface.transform.localPosition -= new Vector3((AddedLengthLeft / 2) - 0.25f, 0, 0);
+        ChairSurface.transform.localPosition -= new Vector3((AddedLengthLeft / 2) - 0.125f, 0, 0);
 
-        ChairBackSurface.transform.localPosition -= new Vector3((AddedLengthLeft / 2) - 0.25f, 0, 0);
+        ChairBackSurface.transform.localPosition -= new Vector3((AddedLengthLeft / 2) - 0.125f, 0, 0);
 
         UpdateTexture();
         PlaceLegs();
@@ -141,10 +141,10 @@ public class ChairBuilder : MonoBehaviour
         AddedLengthBack = DirectionLengthBack * Mathf.Cos((BackAngle * Mathf.Deg2Rad));
 
         // Add required length
-        ChairSurface.transform.localScale = new Vector3(ChairSurface.transform.localScale.x, ChairSurface.transform.localScale.y, AddedLengthBack + 0.5f);
+        ChairSurface.transform.localScale = new Vector3(ChairSurface.transform.localScale.x, ChairSurface.transform.localScale.y, AddedLengthBack + 0.25f);
 
         // Move chair into position after length is added
-        ChairSurface.transform.localPosition += new Vector3(0, 0, (AddedLengthBack / 2) - 0.25f);
+        ChairSurface.transform.localPosition += new Vector3(0, 0, (AddedLengthBack / 2) - 0.125f);
 
         ChairBack.transform.localPosition = new Vector3(0, 0, ChairSurface.transform.localScale.z);
 
@@ -170,10 +170,10 @@ public class ChairBuilder : MonoBehaviour
         AddedLengthUp = DirectionLengthUp * Mathf.Cos((UpAngle * Mathf.Deg2Rad));
 
         // Add required length
-        ChairBackSurface.transform.localScale = new Vector3(ChairBackSurface.transform.localScale.x, AddedLengthUp + 0.5f, ChairBackSurface.transform.localScale.z);
+        ChairBackSurface.transform.localScale = new Vector3(ChairBackSurface.transform.localScale.x, AddedLengthUp + 0.25f, ChairBackSurface.transform.localScale.z);
 
         // Move chair into position after length is added
-        ChairBackSurface.transform.localPosition += new Vector3(0, (AddedLengthUp / 2) - 0.25f, 0);
+        ChairBackSurface.transform.localPosition += new Vector3(0, (AddedLengthUp / 2) - 0.125f, 0);
 
         UpdateTexture();
         PlaceLegs();

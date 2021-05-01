@@ -23,6 +23,8 @@ public class DeskBuilder : MonoBehaviour
 
     private Renderer DeskMaterialRenderer;
 
+    public GameObject Button1, Button2, Button3;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -133,6 +135,24 @@ public class DeskBuilder : MonoBehaviour
 
         UpdateTexture();
         PlaceLegs();
+    }
+
+    public void UpdateButton1(Vector3 PositionReference)
+    {
+        Button1.transform.position = new Vector3(PositionReference.x, transform.position.y, PositionReference.z);
+        Button1.transform.rotation = transform.rotation;
+    }
+
+    public void UpdateButton2(Vector3 PositionReference)
+    {
+        Button2.transform.position = new Vector3(PositionReference.x, transform.position.y, PositionReference.z);
+        Button2.transform.rotation = transform.rotation;
+    }
+
+    public void UpdateButton3(Vector3 PositionReference)
+    {
+        Button3.transform.position = new Vector3(PositionReference.x, transform.position.y, PositionReference.z);
+        Button3.transform.rotation = transform.rotation;
     }
 
     // Update the texture applied to the desk

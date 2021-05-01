@@ -5,9 +5,14 @@ using UnityEngine.UI;
 
 public class WallBuilder : MonoBehaviour
 {
-    // Change position and rotation of wall
-    public void UpdateWallPosition(Vector3 PositionReference, float Yrotation)
+
+    public RoomFader RF;
+
+        // Change position and rotation of wall
+        public void UpdateWallPosition(Vector3 PositionReference, float Yrotation)
     {
+        RF.MakeFadingTrue();
+
         // Change wall position
         transform.position = new Vector3(PositionReference.x, 0, PositionReference.z);
 
