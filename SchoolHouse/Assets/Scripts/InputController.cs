@@ -19,9 +19,9 @@ public class InputController : MonoBehaviour
 
     public GameObject InstructionCanvas;
 
-    public GameObject Ins1, Ins2, Ins3, Ins4, Ins5, Ins6, Ins7, Ins8, Ins9, Ins10, Ins11, Ins12, Ins13, Ins14, Ins15;
+    public GameObject Ins1, Ins2, Ins3, Ins4, Ins5, Ins6, Ins7, Ins8, Ins9, Ins10, Ins11, Ins12, Ins13, Ins14, Ins15, Ins16;
 
-    public GameObject Wall, Desk, Chair, Button1, Button2, Button3;
+    public GameObject Wall, Desk, Chair, Button1, Button2, Button3, Button4;
 
     public GameObject AttachReference, GlobalReference;
 
@@ -31,9 +31,7 @@ public class InputController : MonoBehaviour
 
     public Button LoadButton;
 
-    public GameObject VideoExample;
-
-    public GameObject Content;
+    public GameObject ContentHolder;
 
     // Wall values
     private float WallYrot;
@@ -51,6 +49,7 @@ public class InputController : MonoBehaviour
     private Vector3 Button1Pos;
     private Vector3 Button2Pos;
     private Vector3 Button3Pos;
+    private Vector3 Button4Pos;
 
     // Chair values
     private float ChairYrot;
@@ -60,6 +59,8 @@ public class InputController : MonoBehaviour
     private Vector3 ChairLeft;
     private Vector3 ChairBack;
     private Vector3 ChairBackHeight;
+
+    public RoomFader RF;
 
     // Used to see if user is building room
     private bool Building = false;
@@ -90,6 +91,8 @@ public class InputController : MonoBehaviour
             // Wall position
             if (BuildStage == 0 && Building == true)
             {
+                Wall.SetActive(true);
+
                 WallYrot = ReturnReferencePosition().transform.eulerAngles.y;
 
                 WallPosition = new Vector3(ReturnReferencePosition().transform.position.x, ReturnReferencePosition().transform.position.y, ReturnReferencePosition().transform.position.z);
@@ -111,6 +114,8 @@ public class InputController : MonoBehaviour
             // Desk position
             if (BuildStage == 1 && Building == true)
             {
+                Desk.SetActive(true);
+
                 DeskYrot = ReturnReferencePosition().transform.eulerAngles.y;
 
                 DeskPosition = new Vector3(ReturnReferencePosition().transform.position.x, ReturnReferencePosition().transform.position.y, ReturnReferencePosition().transform.position.z);
@@ -176,6 +181,8 @@ public class InputController : MonoBehaviour
                 PlayerPrefs.SetFloat("DeskLeftY", DeskLeft.y);
                 PlayerPrefs.SetFloat("DeskLeftZ", DeskLeft.z);
 
+                ContentHolder.transform.position = AttachReference.transform.position;
+
                 // Change instructions
                 Ins5.SetActive(false);
                 Ins6.SetActive(true);
@@ -198,8 +205,11 @@ public class InputController : MonoBehaviour
                 Ins7.SetActive(true);
             }
 
+            // Button 1 
             if (BuildStage == 6 && Building == true)
             {
+                Button1.SetActive(true);
+
                 Button1Pos = new Vector3(ReturnReferencePosition().transform.position.x, ReturnReferencePosition().transform.position.y, ReturnReferencePosition().transform.position.z);
                 _deskBuilder.UpdateButton1(Button1Pos);
 
@@ -213,8 +223,11 @@ public class InputController : MonoBehaviour
                 Ins8.SetActive(true);
             }
 
+            // Button 2
             if (BuildStage == 7 && Building == true)
             {
+                Button2.SetActive(true);
+
                 Button2Pos = new Vector3(ReturnReferencePosition().transform.position.x, ReturnReferencePosition().transform.position.y, ReturnReferencePosition().transform.position.z);
                 _deskBuilder.UpdateButton2(Button2Pos);
 
@@ -228,8 +241,11 @@ public class InputController : MonoBehaviour
                 Ins9.SetActive(true);
             }
 
+            // Button 3
             if (BuildStage == 8 && Building == true)
             {
+                Button3.SetActive(true);
+
                 Button3Pos = new Vector3(ReturnReferencePosition().transform.position.x, ReturnReferencePosition().transform.position.y, ReturnReferencePosition().transform.position.z);
                 _deskBuilder.UpdateButton3(Button3Pos);
 
@@ -243,9 +259,29 @@ public class InputController : MonoBehaviour
                 Ins10.SetActive(true);
             }
 
-            // Chair position
+            // Button 4
             if (BuildStage == 9 && Building == true)
             {
+                Button4.SetActive(true);
+
+                Button4Pos = new Vector3(ReturnReferencePosition().transform.position.x, ReturnReferencePosition().transform.position.y, ReturnReferencePosition().transform.position.z);
+                _deskBuilder.UpdateButton4(Button4Pos);
+
+                // Save values
+                PlayerPrefs.SetFloat("Button4X", Button4Pos.x);
+                PlayerPrefs.SetFloat("Button4Y", Button4Pos.y);
+                PlayerPrefs.SetFloat("Button4Z", Button4Pos.z);
+
+                // Change instructions
+                Ins10.SetActive(false);
+                Ins11.SetActive(true);
+            }
+
+            // Chair position
+            if (BuildStage == 10 && Building == true)
+            {
+                Chair.SetActive(true);
+
                 ChairYrot = ReturnReferencePosition().transform.eulerAngles.y;
 
                 ChairPosition = new Vector3(ReturnReferencePosition().transform.position.x, ReturnReferencePosition().transform.position.y, ReturnReferencePosition().transform.position.z);
@@ -260,12 +296,12 @@ public class InputController : MonoBehaviour
                 PlayerPrefs.SetFloat("ChairRotationY", ChairYrot);
 
                 // Change instructions
-                Ins10.SetActive(false);
-                Ins11.SetActive(true);
+                Ins11.SetActive(false);
+                Ins12.SetActive(true);
             }
 
             // Chair height
-            if (BuildStage == 10 && Building == true)
+            if (BuildStage == 11 && Building == true)
             {
                 ChairHeight = new Vector3(ReturnReferencePosition().transform.position.x, ReturnReferencePosition().transform.position.y, ReturnReferencePosition().transform.position.z);
 
@@ -277,12 +313,12 @@ public class InputController : MonoBehaviour
                 PlayerPrefs.SetFloat("ChairHeightZ", ChairHeight.z);
 
                 // Change instructions
-                Ins11.SetActive(false);
-                Ins12.SetActive(true);
+                Ins12.SetActive(false);
+                Ins13.SetActive(true);
             }
 
             // Chair right
-            if (BuildStage == 11 && Building == true)
+            if (BuildStage == 12 && Building == true)
             {
                 ChairRight = new Vector3(ReturnReferencePosition().transform.position.x, ReturnReferencePosition().transform.position.y, ReturnReferencePosition().transform.position.z);
 
@@ -294,12 +330,12 @@ public class InputController : MonoBehaviour
                 PlayerPrefs.SetFloat("ChairRightZ", ChairRight.z);
 
                 // Change instructions
-                Ins12.SetActive(false);
-                Ins13.SetActive(true);
+                Ins13.SetActive(false);
+                Ins14.SetActive(true);
             }
 
             // Chair left
-            if (BuildStage == 12 && Building == true)
+            if (BuildStage == 13 && Building == true)
             {
                 ChairLeft = new Vector3(ReturnReferencePosition().transform.position.x, ReturnReferencePosition().transform.position.y, ReturnReferencePosition().transform.position.z);
 
@@ -311,12 +347,12 @@ public class InputController : MonoBehaviour
                 PlayerPrefs.SetFloat("ChairLeftZ", ChairLeft.z);
 
                 // Change instructions
-                Ins13.SetActive(false);
-                Ins14.SetActive(true);
+                Ins14.SetActive(false);
+                Ins15.SetActive(true);
             }
 
             // Chair back
-            if (BuildStage == 13 && Building == true)
+            if (BuildStage == 14 && Building == true)
             {
                 ChairBack = new Vector3(ReturnReferencePosition().transform.position.x, ReturnReferencePosition().transform.position.y, ReturnReferencePosition().transform.position.z);
 
@@ -328,12 +364,12 @@ public class InputController : MonoBehaviour
                 PlayerPrefs.SetFloat("ChairBackZ", ChairBack.z);
 
                 // Change instructions
-                Ins14.SetActive(false);
-                Ins15.SetActive(true);
+                Ins15.SetActive(false);
+                Ins16.SetActive(true);
             }
 
             // Chair back height
-            if (BuildStage == 14 && Building == true)
+            if (BuildStage == 15 && Building == true)
             {
                 ChairBackHeight = new Vector3(ReturnReferencePosition().transform.position.x, ReturnReferencePosition().transform.position.y, ReturnReferencePosition().transform.position.z);
 
@@ -345,26 +381,23 @@ public class InputController : MonoBehaviour
                 PlayerPrefs.SetFloat("ChairBackHeightZ", ChairBackHeight.z);
 
                 // Change instructions
-                Ins15.SetActive(false);
+                Ins16.SetActive(false);
                 InstructionCanvas.SetActive(false);
+                RF.SetUpFade();
+                Wall.SetActive(false);
 
                 // Save object positions
                 CombineScene();
 
                 PlayerPrefs.SetInt("IsSavedData", 1);
-                VideoExample.SetActive(true);
-
-                Content.SetActive(true);
 
                 LaserPointer.SetActive(true);
             }
 
-            if (BuildStage > 14 && Building == true)
+            if (BuildStage > 15 && Building == true)
             {
                 ResetGlobalPosition();
                 LaserPointer.SetActive(true);
-                VideoExample.SetActive(true);
-                Content.SetActive(true);
             }
 
             if (Building == true)
@@ -406,8 +439,6 @@ public class InputController : MonoBehaviour
 
     private void CombineScene()
     {
-        Content.transform.position = new Vector3(AttachReference.transform.position.x, Content.transform.position.y, Content.transform.position.z);
-
         // Set reset position
         GlobalReference.transform.position = AttachReference.transform.position;
 
@@ -420,6 +451,7 @@ public class InputController : MonoBehaviour
         Button1.transform.parent = GlobalReference.transform;
         Button2.transform.parent = GlobalReference.transform;
         Button3.transform.parent = GlobalReference.transform;
+        Button4.transform.parent = GlobalReference.transform;
 
     }
 
@@ -451,7 +483,6 @@ public class InputController : MonoBehaviour
     public void LoadBuilding()
     {
         MainMenu.SetActive(false);
-
         LaserPointer.SetActive(false);
 
         // Step 1 - Wall position and rotation
@@ -512,7 +543,13 @@ public class InputController : MonoBehaviour
 
         _deskBuilder.UpdateButton3(Button3Pos);
 
-        // Step 10 - Chair position and rotation
+        // Step 10 - Button 4 position
+
+        Button4Pos = new Vector3(PlayerPrefs.GetFloat("Button4X"), PlayerPrefs.GetFloat("Button4Y"), PlayerPrefs.GetFloat("Button4Z"));
+
+        _deskBuilder.UpdateButton4(Button4Pos);
+
+        // Step 11 - Chair position and rotation
 
         ChairYrot = PlayerPrefs.GetFloat("ChairRotationY", 0);
 
@@ -520,31 +557,31 @@ public class InputController : MonoBehaviour
 
         _chairBuilder.UpdateChairPosition(ChairPosition, ChairYrot);
 
-        // Step 11 - Chair height
+        // Step 12 - Chair height
 
         ChairHeight = new Vector3(PlayerPrefs.GetFloat("ChairHeightX", 0), PlayerPrefs.GetFloat("ChairHeightY", 0), PlayerPrefs.GetFloat("ChairHeightZ", 0));
 
         _chairBuilder.UpdateChairHeight(ChairHeight);
 
-        // Step 12 - Chair right
+        // Step 13 - Chair right
 
         ChairRight = new Vector3(PlayerPrefs.GetFloat("ChairRightX", 0), PlayerPrefs.GetFloat("ChairRightY", 0), PlayerPrefs.GetFloat("ChairRightZ", 0));
 
         _chairBuilder.UpdateChairRight(ChairRight);
 
-        // Step 13 - Chair left
+        // Step 14 - Chair left
 
         ChairLeft = new Vector3(PlayerPrefs.GetFloat("ChairLeftX", 0), PlayerPrefs.GetFloat("ChairLeftY", 0), PlayerPrefs.GetFloat("ChairLeftZ", 0));
 
         _chairBuilder.UpdateChairLeft(ChairLeft);
 
-        // Step 14 - Chair back
+        // Step 15 - Chair back
 
         ChairBack = new Vector3(PlayerPrefs.GetFloat("ChairBackX", 0), PlayerPrefs.GetFloat("ChairBackY", 0), PlayerPrefs.GetFloat("ChairBackZ", 0));
 
         _chairBuilder.UpdateChairBack(ChairBack);
 
-        // Step 15 - Chair back height
+        // Step 16 - Chair back height
 
         ChairBackHeight = new Vector3(PlayerPrefs.GetFloat("ChairBackHeightX", 0), PlayerPrefs.GetFloat("ChairBackHeightY", 0), PlayerPrefs.GetFloat("ChairBackHeightZ", 0));
 
@@ -554,9 +591,10 @@ public class InputController : MonoBehaviour
         CombineScene();
 
         // Next click will realign position
-        BuildStage = 15;
+        BuildStage = 16;
 
         Building = true;
 
+        RF.SetUpFade();
     }
 }
