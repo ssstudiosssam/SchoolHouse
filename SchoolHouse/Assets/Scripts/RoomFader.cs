@@ -10,7 +10,7 @@ public class RoomFader : MonoBehaviour
 
     public Material RoomMaterial, RoomAlphaMaterial, HallwayMaterial, HallwayAlphaMaterial, OutsideMaterial, OutsideAlphaMaterial;
 
-    private bool fadingIn = false;
+    private bool fadingIn = false, fadingOut = false;
 
     private Color RoomFade, HallwayFade, OutsideFade;
 
@@ -63,11 +63,38 @@ public class RoomFader : MonoBehaviour
             HallwayRend.material = HallwayMaterial;
             OutsideRend.material = OutsideMaterial;
         }
+
+        // Fade room out
+        if (fadingOut == true)
+        {
+            RoomRend.material = RoomAlphaMaterial;
+            HallwayRend.material = HallwayAlphaMaterial;
+            OutsideRend.material = OutsideAlphaMaterial;
+
+            RoomFade.a -= FadeSpeed * Time.deltaTime;
+            HallwayFade.a -= FadeSpeed * Time.deltaTime;
+            OutsideFade.a -= FadeSpeed * Time.deltaTime;
+
+            RoomAlphaMaterial.color = RoomFade;
+            HallwayAlphaMaterial.color = HallwayFade;
+            OutsideAlphaMaterial.color = OutsideFade;
+        }
+
+        if (fadingOut == true && RoomFade.a < 0f)
+        {
+            fadingOut = false;
+        }
+
     }
 
     public void MakeFadingTrue()
     {
         fadingIn = true;
+    }
+
+    public void MakeFadingOutTrue()
+    {
+        fadingOut = true;
     }
 
     public void SetUpFade()

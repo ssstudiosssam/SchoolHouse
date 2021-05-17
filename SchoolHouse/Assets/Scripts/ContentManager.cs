@@ -21,19 +21,23 @@ public class ContentManager : MonoBehaviour
     public Transform[] Menu1Positions;
     public Transform[] Menu2Positions;
 
-    public GameObject pointer1, pointer2;
+    public GameObject selectionRing1, selectionRing2;
 
     public bool menuVisible = false;
 
     public GameObject Menu1, Menu2, Menu3;
-    public GameObject FloatingMenu1, FloatingMenu2, FloatingMenu3;
 
     public GameObject T1Options, T2Options, T3Options, T4Options;
-    public GameObject FloatingT1Options, FloatingT2Options, FloatingT3Options, FloatingT4Options;
 
     public GameObject T1ImageHolder, T1VideoHolder, T1DocumentHolder, T2ImageHolder, T2VideoHolder, T2DocumentHolder, T3ImageHolder, T3VideoHolder, T3DocumentHolder, T4ImageHolder, T4VideoHolder, T4DocumentHolder;
 
+    public GameObject FloatingContent;
+
     public GameObject FloatingT1ImageHolder, FloatingT1VideoHolder, FloatingT1DocumentHolder, FloatingT2ImageHolder, FloatingT2VideoHolder, FloatingT2DocumentHolder, FloatingT3ImageHolder, FloatingT3VideoHolder, FloatingT3DocumentHolder, FloatingT4ImageHolder, FloatingT4VideoHolder, FloatingT4DocumentHolder;
+
+    public SceneController SC;
+
+    public Text PanelInstructionText;
 
     // Start is called before the first frame update
     void Start()
@@ -77,18 +81,24 @@ public class ContentManager : MonoBehaviour
         {
             MenuOptionText1.color = Color.green;
             MenuOptionText2.color = Color.red;
+
+            PanelInstructionText.text = "PICK A TIME IN HISTORY";
         }
 
         if (CurrentSelected == 2)
         {
             MenuOptionText1.color = Color.red;
             MenuOptionText2.color = Color.green;
+
+            PanelInstructionText.text = "CHOOSE IMAGES, VIDEOS OR DOCUMENTS";
         }
 
         if (CurrentSelected == 3)
         {
             MenuOptionText1.color = Color.red;
             MenuOptionText2.color = Color.red;
+
+            PanelInstructionText.text = "SCROLL THROUGH CONTENT";
         }
 
         ShowCorrectContent();
@@ -117,6 +127,15 @@ public class ContentManager : MonoBehaviour
                 MenuOption2 = 1;
 
                 ResetValues();
+            }
+
+            // returning to main selection
+            if (CurrentSelected == 1)
+            {
+                if (MenuOption1 == 1)
+                {
+                    SC.BackFromT1();
+                }
             }
 
             UpdateMenuOption();
@@ -356,117 +375,106 @@ public class ContentManager : MonoBehaviour
             if (CurrentSelected == 1)
             {
                 Menu1.SetActive(true);
-                FloatingMenu1.SetActive(true);
 
-                pointer1.SetActive(true);
+                selectionRing1.SetActive(true);
 
                 if (MenuOption1 == 1)
                 {
-                    pointer1.transform.position = Menu1Positions[0].position;
+                    selectionRing1.transform.position = Menu1Positions[0].position;
                 }
 
                 if (MenuOption1 == 2)
                 {
-                    pointer1.transform.position = Menu1Positions[1].position;
+                    selectionRing1.transform.position = Menu1Positions[1].position;
                 }
 
                 if (MenuOption1 == 3)
                 {
-                    pointer1.transform.position = Menu1Positions[2].position;
+                    selectionRing1.transform.position = Menu1Positions[2].position;
                 }
 
                 if (MenuOption1 == 4)
                 {
-                    pointer1.transform.position = Menu1Positions[3].position;
+                    selectionRing1.transform.position = Menu1Positions[3].position;
                 }
             }
             else
             {
                 Menu1.SetActive(false);
-                FloatingMenu1.SetActive(false);
 
-                pointer1.SetActive(false);
+                selectionRing1.SetActive(false);
             }
 
             // Second menu selection
             if (CurrentSelected == 2)
             {
                 Menu2.SetActive(true);
-                FloatingMenu2.SetActive(true);
 
-                pointer2.SetActive(true);
+                selectionRing2.SetActive(true);
 
                 // Show correct options
                 // T1 Options
                 if (MenuOption1 == 1)
                 {
                     T1Options.SetActive(true);
-                    FloatingT1Options.SetActive(true);
+                    SC.FirstSceneSetUp();
                 }
                 else
                 {
                     T1Options.SetActive(false);
-                    FloatingT1Options.SetActive(false);
                 }
 
                 // T2 Options
                 if (MenuOption1 == 2)
                 {
                     T2Options.SetActive(true);
-                    FloatingT2Options.SetActive(true);
                 }
                 else
                 {
                     T2Options.SetActive(false);
-                    FloatingT2Options.SetActive(false);
                 }
 
                 // T3 Options
                 if (MenuOption1 == 3)
                 {
                     T3Options.SetActive(true);
-                    FloatingT3Options.SetActive(true);
                 }
                 else
                 {
                     T3Options.SetActive(false);
-                    FloatingT3Options.SetActive(false);
                 }
 
                 // T4 Options
                 if (MenuOption1 == 4)
                 {
                     T4Options.SetActive(true);
-                    FloatingT4Options.SetActive(true);
                 }
                 else
                 {
                     T4Options.SetActive(false);
-                    FloatingT4Options.SetActive(false);
                 }
 
                 // Move cursor
                 if (MenuOption2 == 1)
                 {
-                    pointer2.transform.position = Menu2Positions[0].position;
+                    selectionRing2.transform.position = Menu2Positions[0].position;
                 }
 
                 if (MenuOption2 == 2)
                 {
-                    pointer2.transform.position = Menu2Positions[1].position;
+                    selectionRing2.transform.position = Menu2Positions[1].position;
                 }
 
                 if (MenuOption2 == 3)
                 {
-                    pointer2.transform.position = Menu2Positions[2].position;
+                    selectionRing2.transform.position = Menu2Positions[2].position;
                 }
             }
             else
             {
                 Menu2.SetActive(false);
-                FloatingMenu2.SetActive(false);
 
-                pointer2.SetActive(false);
+                selectionRing2.SetActive(false);
             }
 
             // Third menu selection
@@ -474,7 +482,7 @@ public class ContentManager : MonoBehaviour
             {
 
                 Menu3.SetActive(true);
-                FloatingMenu3.SetActive(true);
+                FloatingContent.SetActive(true);
 
                 // T1
 
@@ -644,7 +652,7 @@ public class ContentManager : MonoBehaviour
             else
             {
                 Menu3.SetActive(false);
-                FloatingMenu3.SetActive(false);
+                FloatingContent.SetActive(false);
             }
         }
     }

@@ -519,6 +519,8 @@ public class InputController : MonoBehaviour
 
         _deskBuilder.UpdateDeskLeft(DeskLeft);
 
+        ContentHolder.transform.position = AttachReference.transform.position;
+
         // Step 6 - Desk back
 
         DeskBack = new Vector3(PlayerPrefs.GetFloat("DeskBackX", 0), PlayerPrefs.GetFloat("DeskBackY", 0), PlayerPrefs.GetFloat("DeskBackZ", 0));
