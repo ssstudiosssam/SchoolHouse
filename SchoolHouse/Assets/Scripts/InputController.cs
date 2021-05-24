@@ -60,8 +60,6 @@ public class InputController : MonoBehaviour
     private Vector3 ChairBack;
     private Vector3 ChairBackHeight;
 
-    public RoomFader RF;
-
     // Used to see if user is building room
     private bool Building = false;
 
@@ -383,8 +381,6 @@ public class InputController : MonoBehaviour
                 // Change instructions
                 Ins16.SetActive(false);
                 InstructionCanvas.SetActive(false);
-                RF.SetUpFade();
-                Wall.SetActive(false);
 
                 // Save object positions
                 CombineScene();
@@ -596,7 +592,5 @@ public class InputController : MonoBehaviour
         BuildStage = 16;
 
         Building = true;
-
-        RF.SetUpFade();
     }
 }

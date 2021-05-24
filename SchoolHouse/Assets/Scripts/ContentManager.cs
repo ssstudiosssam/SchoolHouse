@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Video;
 
 public class ContentManager : MonoBehaviour
 {
@@ -12,32 +13,62 @@ public class ContentManager : MonoBehaviour
 
     public Text MenuOptionText1, MenuOptionText2;
 
-    public Text T1ImageText, T1VideoText, T1DocumentText, T2ImageText, T2VideoText, T2DocumentText, T3ImageText, T3VideoText, T3DocumentText, T4ImageText, T4VideoText, T4DocumentText;
+    public Text T1ImageText, T1TimelineText, T2ImageText, T2VideoText, T2TimelineText, T3ImageText, T3VideoText, T3ArchiveText, T3TimelineText;
 
-    private int CurrentT1Image, CurrentT1Video, CurrentT1Document, CurrentT2Image, CurrentT2Video, CurrentT2Document, CurrentT3Image, CurrentT3Video, CurrentT3Document, CurrentT4Image, CurrentT4Video, CurrentT4Document;
+    public Text CurrentSelectedText;
 
-    public GameObject[] T1Images; 
+    public Text PlayPauseText;
+    private bool videoPlaying = false;
+
+    private int CurrentT1Image, CurrentT1Timeline, CurrentT2Image, CurrentT2Video, CurrentT2Timeline, CurrentT3Image, CurrentT3Video, CurrentT3Archive, CurrentT3Timeline;
+
+    public GameObject[] T1Images, T2Images, T3Images;
+
+    public GameObject[] T2Videos;
+    private VideoPlayer MyVideoPlayer;
 
     public Transform[] Menu1Positions;
-    public Transform[] Menu2Positions;
+    public Transform[] T1MenuPositions;
+    public Transform[] T2MenuPositions;
+    public Transform[] T3MenuPositions;
 
-    public GameObject selectionRing1, selectionRing2;
+    public GameObject selectionRing1, T1SelectionRing, T2SelectionRing, T3SelectionRing;
 
     public bool menuVisible = false;
 
     public GameObject Menu1, Menu2, Menu3;
 
-    public GameObject T1Options, T2Options, T3Options, T4Options;
+    public GameObject T1Options, T2Options, T3Options;
 
-    public GameObject T1ImageHolder, T1VideoHolder, T1DocumentHolder, T2ImageHolder, T2VideoHolder, T2DocumentHolder, T3ImageHolder, T3VideoHolder, T3DocumentHolder, T4ImageHolder, T4VideoHolder, T4DocumentHolder;
+    public GameObject T1ImageHolder, T1TimelineHolder, T2ImageHolder, T2VideoHolder, T2TimelineHolder, T3ImageHolder, T3VideoHolder, T3ArchiveHolder, T3TimelineHolder;
 
     public GameObject FloatingContent;
 
-    public GameObject FloatingT1ImageHolder, FloatingT1VideoHolder, FloatingT1DocumentHolder, FloatingT2ImageHolder, FloatingT2VideoHolder, FloatingT2DocumentHolder, FloatingT3ImageHolder, FloatingT3VideoHolder, FloatingT3DocumentHolder, FloatingT4ImageHolder, FloatingT4VideoHolder, FloatingT4DocumentHolder;
-
-    public SceneController SC;
+    public GameObject FloatingT1ImageHolder, FloatingT1TimelineHolder, FloatingT2ImageHolder, FloatingT2VideoHolder, FloatingT2TimelineHolder, FloatingT3ImageHolder, FloatingT3VideoHolder, FloatingT3ArchiveHolder, FloatingT3TimelineHolder;
 
     public Text PanelInstructionText;
+
+    public GameObject T1Timeline, T2Timeline, T3Timeline;
+    public GameObject TimelinePos, TimelineOriginalPos;
+
+    public float menuSpeed;
+
+    public Fader fader;
+
+    public GameObject MainRoom, T1Room, T2Room, T3Room;
+
+    // Narrative
+    private bool NarrativeVisible = false;
+
+    public GameObject NarrativePos, NarrativeOriginalPos;
+
+    public GameObject NarrativeHolder;
+
+    private int CurrentT1Page, CurrentT2Page, CurrentT3Page;
+
+    public GameObject T1Narrative, T2Narrative, T3Narrative;
+
+    public Text T1PageText, T2PageText, T3PageText;
 
     // Start is called before the first frame update
     void Start()
@@ -53,31 +84,79 @@ public class ContentManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        // If T1 timeline - move to right position
+        if (CurrentSelected == 3 && MenuOption1 == 1 && MenuOption2 == 2)
+        {
+            T1Timeline.transform.position = Vector3.Lerp(T1Timeline.transform.position, TimelinePos.transform.position, menuSpeed * Time.deltaTime);         
+        }
+
+        // If T2 timeline - move to right position
+        if (CurrentSelected == 3 && MenuOption1 == 2 && MenuOption2 == 3)
+        {
+            T2Timeline.transform.position = Vector3.Lerp(T2Timeline.transform.position, TimelinePos.transform.position, menuSpeed * Time.deltaTime);
+        }
+
+        // If T3 timeline - move to right position
+        if (CurrentSelected == 3 && MenuOption1 == 3 && MenuOption2 == 4)
+        {
+            T3Timeline.transform.position = Vector3.Lerp(T3Timeline.transform.position, TimelinePos.transform.position, menuSpeed * Time.deltaTime);
+        }
+
+        if (NarrativeVisible == true)
+        {
+            //Narrative T1 Move
+            if (MenuOption1 == 1)
+            {
+                T1Narrative.transform.position = Vector3.Lerp(T1Narrative.transform.position, NarrativePos.transform.position, menuSpeed * Time.deltaTime);
+            }
+
+            //Narrative T2 Move
+            if (MenuOption1 == 2)
+            {
+                T2Narrative.transform.position = Vector3.Lerp(T2Narrative.transform.position, NarrativePos.transform.position, menuSpeed * Time.deltaTime);
+            }
+
+            //Narrative T3 Move
+            if (MenuOption1 == 3)
+            {
+                T3Narrative.transform.position = Vector3.Lerp(T3Narrative.transform.position, NarrativePos.transform.position, menuSpeed * Time.deltaTime);
+            }
+        }
     }
 
-    private void UpdateMenuOption()
+    public void UpdateMenuOption()
     {
         MenuOptionText1.text = MenuOption1.ToString() + ".";
         MenuOptionText2.text = MenuOption2.ToString() + ".";
 
         T1ImageText.text = CurrentT1Image.ToString();
-        T1VideoText.text = CurrentT1Video.ToString();
-        T1DocumentText.text = CurrentT1Document.ToString();
+        T1TimelineText.text = CurrentT1Timeline.ToString();
 
         T2ImageText.text = CurrentT2Image.ToString();
         T2VideoText.text = CurrentT2Video.ToString();
-        T2DocumentText.text = CurrentT2Document.ToString();
+        T2TimelineText.text = CurrentT2Timeline.ToString();
 
         T3ImageText.text = CurrentT3Image.ToString();
         T3VideoText.text = CurrentT3Video.ToString();
-        T3DocumentText.text = CurrentT3Document.ToString();
+        T3ArchiveText.text = CurrentT3Archive.ToString();
+        T3TimelineText.text = CurrentT3Timeline.ToString();
 
-        T4ImageText.text = CurrentT4Image.ToString();
-        T4VideoText.text = CurrentT4Video.ToString();
-        T4DocumentText.text = CurrentT4Document.ToString();
+        CurrentSelectedText.text = CurrentSelected.ToString();
 
-        if (CurrentSelected == 1)
+        T1PageText.text = CurrentT1Page.ToString();
+        T2PageText.text = CurrentT2Page.ToString();
+        T3PageText.text = CurrentT3Page.ToString();
+
+        if (videoPlaying == true)
+        {
+            PlayPauseText.text = "PLAY";
+        }
+        else
+        {
+            PlayPauseText.text = "PAUSE";
+        }
+
+        if (CurrentSelected == 1 && menuVisible == true && NarrativeVisible == false)
         {
             MenuOptionText1.color = Color.green;
             MenuOptionText2.color = Color.red;
@@ -85,15 +164,15 @@ public class ContentManager : MonoBehaviour
             PanelInstructionText.text = "PICK A TIME IN HISTORY";
         }
 
-        if (CurrentSelected == 2)
+        if (CurrentSelected == 2 && NarrativeVisible == false)
         {
             MenuOptionText1.color = Color.red;
             MenuOptionText2.color = Color.green;
 
-            PanelInstructionText.text = "CHOOSE IMAGES, VIDEOS OR DOCUMENTS";
+            PanelInstructionText.text = "CHOOSE CONTENT";
         }
 
-        if (CurrentSelected == 3)
+        if (CurrentSelected == 3 && NarrativeVisible == false)
         {
             MenuOptionText1.color = Color.red;
             MenuOptionText2.color = Color.red;
@@ -101,16 +180,99 @@ public class ContentManager : MonoBehaviour
             PanelInstructionText.text = "SCROLL THROUGH CONTENT";
         }
 
+        if (NarrativeVisible == true)
+        {
+            PanelInstructionText.text = "ARROWS TO SCROLL - GREEN TO SKIP/CONTINUE";
+        }
+
         ShowCorrectContent();
     }
 
     public void IncreaseCurrentSelected()
     {
-        if (menuVisible == true)
+
+        if (menuVisible == true && NarrativeVisible == false)
         {
-            if (CurrentSelected < 3)
+            if (CurrentSelected == 1)
             {
                 CurrentSelected = CurrentSelected + 1;
+
+                if (MenuOption1 == 1)
+                {
+                    //start T1
+                    fader.FadeToBlack();
+                    NarrativeVisible = true;
+                    Invoke("SetUpT1", 3.0f);
+                }
+
+                if (MenuOption1 == 2)
+                {
+                    //start T2
+                    fader.FadeToBlack();
+                    NarrativeVisible = true;
+                    Invoke("SetUpT2", 3.0f);
+                }
+
+                if (MenuOption1 == 3)
+                {
+                    //start T3
+                    fader.FadeToBlack();
+                    NarrativeVisible = true;
+                    Invoke("SetUpT3", 3.0f);
+                }
+            }
+            else if (CurrentSelected == 2)
+            {
+                CurrentSelected = CurrentSelected + 1;
+            }
+            else if (CurrentSelected == 3)
+            {
+                // if T2 Videos
+                if (MenuOption1 == 2)
+                {
+                    // videos
+                    if (MenuOption2 == 2)
+                    {
+                        CurrentSelected = CurrentSelected + 1;
+                        PlayVideo();
+                    }
+                }
+
+                // if T3 Videos
+                if (MenuOption1 == 3)
+                {
+                    // videos
+                    if (MenuOption2 == 2)
+                    {
+                        CurrentSelected = CurrentSelected + 1;
+                        PlayVideo();
+                    }
+                }
+            }
+
+            UpdateMenuOption();
+        }
+        else
+        {
+            if (MenuOption1 == 1)
+            {
+                NarrativeVisible = false;
+                T1Narrative.SetActive(false);
+                NarrativeHolder.SetActive(false);
+            }
+
+            if (MenuOption1 == 2)
+            {
+                NarrativeVisible = false;
+                T2Narrative.SetActive(false);
+                NarrativeHolder.SetActive(false);
+            }
+
+            if (MenuOption1 == 3)
+            {
+                NarrativeVisible = false;
+                T3Narrative.SetActive(false);
+                NarrativeHolder.SetActive(false);
             }
 
             UpdateMenuOption();
@@ -121,7 +283,13 @@ public class ContentManager : MonoBehaviour
     {
         if (menuVisible == true)
         {
-            if (CurrentSelected > 1)
+            //pause any videos
+            if (videoPlaying == true)
+            {
+                CurrentSelected = CurrentSelected - 1;
+                PauseVideo();
+            }
+            else if(CurrentSelected > 1)
             {
                 CurrentSelected = CurrentSelected - 1;
                 MenuOption2 = 1;
@@ -134,27 +302,62 @@ public class ContentManager : MonoBehaviour
             {
                 if (MenuOption1 == 1)
                 {
-                    SC.BackFromT1();
+                    fader.FadeToBlack();
+                    NarrativeVisible = false;
+                    Invoke("SetUpMain", 3.0f);
+                    //T1 DONE
+                }
+
+                if (MenuOption1 == 2)
+                {
+                    fader.FadeToBlack();
+                    NarrativeVisible = false;
+                    Invoke("SetUpMain", 3.0f);
+                    //T2 DONE
+                }
+
+                if (MenuOption1 == 3)
+                {
+                    fader.FadeToBlack();
+                    NarrativeVisible = false;
+                    Invoke("SetUpMain", 3.0f);
+                    //T3 DONE
                 }
             }
 
             UpdateMenuOption();
+
+            NarrativeVisible = false;
         }
     }
 
     public void IncreaseMenuOption()
     {
-        if (menuVisible == true)
+        if (menuVisible == true && NarrativeVisible == false)
         {
 
-            // T1 T2 T3 T4
-            if (CurrentSelected == 1 && MenuOption1 < 4)
+            // T1 T2 T3
+            if (CurrentSelected == 1 && MenuOption1 < 3)
             {
                 MenuOption1 = MenuOption1 + 1;
             }
 
-            // IMAGES VIDEO DOCUMENTS
-            if (CurrentSelected == 2 && MenuOption2 < 3)
+            // CHOOSE CONTENT WITHIN SECTION
+
+            // if T1
+            if (CurrentSelected == 2 && MenuOption1 == 1 && MenuOption2 < 2)
+            {
+                MenuOption2 = MenuOption2 + 1;
+            }
+
+            // if T2
+            if (CurrentSelected == 2 && MenuOption1 == 2 && MenuOption2 < 3)
+            {
+                MenuOption2 = MenuOption2 + 1;
+            }
+
+            // if T3
+            if (CurrentSelected == 2 && MenuOption1 == 3 && MenuOption2 < 4)
             {
                 MenuOption2 = MenuOption2 + 1;
             }
@@ -171,16 +374,11 @@ public class ContentManager : MonoBehaviour
                         CurrentT1Image++;
                     }
 
-                    // videos
-                    if (MenuOption2 == 2 && CurrentT1Video < 10)
+                    // timeline
+                    if (MenuOption2 == 2 && CurrentT1Timeline < 14)
                     {
-                        CurrentT1Video++;
-                    }
-
-                    // documents
-                    if (MenuOption2 == 3 && CurrentT1Document < 10)
-                    {
-                        CurrentT1Document++;
+                        CurrentT1Timeline++;
+                        TimelinePos.transform.localPosition -= new Vector3(1.25f, 0, 0);
                     }
                 }
 
@@ -188,21 +386,22 @@ public class ContentManager : MonoBehaviour
                 if (MenuOption1 == 2)
                 {
                     // images
-                    if (MenuOption2 == 1 && CurrentT2Image < 10)
+                    if (MenuOption2 == 1 && CurrentT2Image < T2Images.Length)
                     {
                         CurrentT2Image++;
                     }
 
                     // videos
-                    if (MenuOption2 == 2 && CurrentT2Video < 10)
+                    if (MenuOption2 == 2 && CurrentT2Video < T2Videos.Length)
                     {
                         CurrentT2Video++;
                     }
 
-                    // documents
-                    if (MenuOption2 == 3 && CurrentT2Document < 10)
+                    // timeline
+                    if (MenuOption2 == 3 && CurrentT2Timeline < 18)
                     {
-                        CurrentT2Document++;
+                        CurrentT2Timeline++;
+                        TimelinePos.transform.localPosition -= new Vector3(1.25f, 0, 0);
                     }
                 }
 
@@ -210,7 +409,7 @@ public class ContentManager : MonoBehaviour
                 if (MenuOption1 == 3)
                 {
                     // images
-                    if (MenuOption2 == 1 && CurrentT3Image < 10)
+                    if (MenuOption2 == 1 && CurrentT3Image < T3Images.Length)
                     {
                         CurrentT3Image++;
                     }
@@ -221,45 +420,54 @@ public class ContentManager : MonoBehaviour
                         CurrentT3Video++;
                     }
 
-                    // documents
-                    if (MenuOption2 == 3 && CurrentT3Document < 10)
+                    // archive
+                    if (MenuOption2 == 3 && CurrentT3Archive < 10)
                     {
-                        CurrentT3Document++;
-                    }
-                }
-
-                // if T4
-                if (MenuOption1 == 4)
-                {
-                    // images
-                    if (MenuOption2 == 1 && CurrentT4Image < 10)
-                    {
-                        CurrentT4Image++;
+                        CurrentT3Archive++;
                     }
 
-                    // videos
-                    if (MenuOption2 == 2 && CurrentT4Video < 10)
+                    // timeline
+                    if (MenuOption2 == 4 && CurrentT3Timeline < 26)
                     {
-                        CurrentT4Video++;
-                    }
-
-                    // documents
-                    if (MenuOption2 == 3 && CurrentT4Document < 10)
-                    {
-                        CurrentT4Document++;
+                        CurrentT3Timeline++;
+                        TimelinePos.transform.localPosition -= new Vector3(1.25f, 0, 0);
                     }
                 }
             }
 
             UpdateMenuOption();
         }
+
+        if (NarrativeVisible == true)
+        {
+            if (MenuOption1 == 1 && CurrentT1Page < 4)
+            {
+                CurrentT1Page++;
+                NarrativePos.transform.localPosition -= new Vector3(2.00f, 0, 0);
+            }
+
+            if (MenuOption1 == 2 && CurrentT2Page < 5)
+            {
+                CurrentT2Page++;
+                NarrativePos.transform.localPosition -= new Vector3(2.00f, 0, 0);
+            }
+
+            if (MenuOption1 == 3 && CurrentT3Page < 11)
+            {
+                CurrentT3Page++;
+                NarrativePos.transform.localPosition -= new Vector3(2.00f, 0, 0);
+            }
+
+            UpdateMenuOption();
+        }
+
     }
 
     public void DecreaseMenuOption()
     {
-        if (menuVisible == true)
+        if (menuVisible == true && NarrativeVisible == false)
         {
-            // T1 T2 T3 T4
+            // T1 T2 T3
             if (CurrentSelected == 1 && MenuOption1 > 1)
             {
                 MenuOption1 = MenuOption1 - 1;
@@ -271,7 +479,7 @@ public class ContentManager : MonoBehaviour
                 MenuOption2 = MenuOption2 - 1;
             }
 
-            // CURRENT MEDIA
+            // CHOOSE CONTENT WITHIN SECTION
             if (CurrentSelected == 3)
             {
                 // if T1
@@ -283,16 +491,11 @@ public class ContentManager : MonoBehaviour
                         CurrentT1Image--;
                     }
 
-                    // videos
-                    if (MenuOption2 == 2 && CurrentT1Video > 1)
+                    // timeline
+                    if (MenuOption2 == 2 && CurrentT1Timeline > 1)
                     {
-                        CurrentT1Video--;
-                    }
-
-                    // documents
-                    if (MenuOption2 == 3 && CurrentT1Document > 1)
-                    {
-                        CurrentT1Document--;
+                        CurrentT1Timeline--;
+                        TimelinePos.transform.localPosition += new Vector3(1.25f, 0, 0);
                     }
                 }
 
@@ -311,10 +514,11 @@ public class ContentManager : MonoBehaviour
                         CurrentT2Video--;
                     }
 
-                    // documents
-                    if (MenuOption2 == 3 && CurrentT2Document > 1)
+                    // timeline
+                    if (MenuOption2 == 3 && CurrentT2Timeline > 1)
                     {
-                        CurrentT2Document--;
+                        CurrentT2Timeline--;
+                        TimelinePos.transform.localPosition += new Vector3(1.25f, 0, 0);
                     }
                 }
 
@@ -333,34 +537,43 @@ public class ContentManager : MonoBehaviour
                         CurrentT3Video--;
                     }
 
-                    // documents
-                    if (MenuOption2 == 3 && CurrentT3Document > 1)
+                    // archive
+                    if (MenuOption2 == 3 && CurrentT3Archive > 1)
                     {
-                        CurrentT3Document--;
+                        CurrentT3Archive--;
+                    }
+
+                    // timeline
+                    if (MenuOption2 == 4 && CurrentT3Timeline > 1)
+                    {
+                        CurrentT3Timeline--;
+                        TimelinePos.transform.localPosition += new Vector3(1.25f, 0, 0);
                     }
                 }
+            }
 
-                // if T4
-                if (MenuOption1 == 4)
-                {
-                    // images
-                    if (MenuOption2 == 1 && CurrentT4Image > 1)
-                    {
-                        CurrentT4Image--;
-                    }
+            UpdateMenuOption();
+        }
 
-                    // videos
-                    if (MenuOption2 == 2 && CurrentT4Video > 1)
-                    {
-                        CurrentT4Video--;
-                    }
+        if (NarrativeVisible == true)
+        {
 
-                    // documents
-                    if (MenuOption2 == 3 && CurrentT4Document > 1)
-                    {
-                        CurrentT4Document--;
-                    }
-                }
+            if (MenuOption1 == 1 && CurrentT1Page > 1)
+            {
+                CurrentT1Page--;
+                NarrativePos.transform.localPosition += new Vector3(2.00f, 0, 0);
+            }
+
+            if (MenuOption1 == 2)
+            {
+                CurrentT2Page--;
+                NarrativePos.transform.localPosition += new Vector3(2.00f, 0, 0);
+            }
+
+            if (MenuOption1 == 3)
+            {
+                CurrentT3Page--;
+                NarrativePos.transform.localPosition += new Vector3(2.00f, 0, 0);
             }
 
             UpdateMenuOption();
@@ -392,32 +605,35 @@ public class ContentManager : MonoBehaviour
                 {
                     selectionRing1.transform.position = Menu1Positions[2].position;
                 }
-
-                if (MenuOption1 == 4)
-                {
-                    selectionRing1.transform.position = Menu1Positions[3].position;
-                }
             }
             else
             {
                 Menu1.SetActive(false);
-
                 selectionRing1.SetActive(false);
             }
 
             // Second menu selection
-            if (CurrentSelected == 2)
+            if (CurrentSelected == 2 && NarrativeVisible == false)
             {
                 Menu2.SetActive(true);
-
-                selectionRing2.SetActive(true);
 
                 // Show correct options
                 // T1 Options
                 if (MenuOption1 == 1)
                 {
                     T1Options.SetActive(true);
-                    SC.FirstSceneSetUp();
+                    T1SelectionRing.SetActive(true);
+
+                    // Move cursor
+                    if (MenuOption2 == 1)
+                    {
+                        T1SelectionRing.transform.position = T1MenuPositions[0].position;
+                    }
+
+                    if (MenuOption2 == 2)
+                    {
+                        T1SelectionRing.transform.position = T1MenuPositions[1].position;
+                    }
                 }
                 else
                 {
@@ -428,6 +644,23 @@ public class ContentManager : MonoBehaviour
                 if (MenuOption1 == 2)
                 {
                     T2Options.SetActive(true);
+                    T2SelectionRing.SetActive(true);
+
+                    // Move cursor
+                    if (MenuOption2 == 1)
+                    {
+                        T2SelectionRing.transform.position = T2MenuPositions[0].position;
+                    }
+
+                    if (MenuOption2 == 2)
+                    {
+                        T2SelectionRing.transform.position = T2MenuPositions[1].position;
+                    }
+
+                    if (MenuOption2 == 3)
+                    {
+                        T2SelectionRing.transform.position = T2MenuPositions[2].position;
+                    }
                 }
                 else
                 {
@@ -438,47 +671,44 @@ public class ContentManager : MonoBehaviour
                 if (MenuOption1 == 3)
                 {
                     T3Options.SetActive(true);
+                    T3SelectionRing.SetActive(true);
+
+                    // Move cursor
+                    if (MenuOption2 == 1)
+                    {
+                        T3SelectionRing.transform.position = T3MenuPositions[0].position;
+                    }
+
+                    if (MenuOption2 == 2)
+                    {
+                        T3SelectionRing.transform.position = T3MenuPositions[1].position;
+                    }
+
+                    if (MenuOption2 == 3)
+                    {
+                        T3SelectionRing.transform.position = T3MenuPositions[2].position;
+                    }
+
+                    if (MenuOption2 == 4)
+                    {
+                        T3SelectionRing.transform.position = T3MenuPositions[3].position;
+                    }
                 }
                 else
                 {
                     T3Options.SetActive(false);
                 }
-
-                // T4 Options
-                if (MenuOption1 == 4)
-                {
-                    T4Options.SetActive(true);
-                }
-                else
-                {
-                    T4Options.SetActive(false);
-                }
-
-                // Move cursor
-                if (MenuOption2 == 1)
-                {
-                    selectionRing2.transform.position = Menu2Positions[0].position;
-                }
-
-                if (MenuOption2 == 2)
-                {
-                    selectionRing2.transform.position = Menu2Positions[1].position;
-                }
-
-                if (MenuOption2 == 3)
-                {
-                    selectionRing2.transform.position = Menu2Positions[2].position;
-                }
             }
             else
             {
                 Menu2.SetActive(false);
-
-                selectionRing2.SetActive(false);
+                T1SelectionRing.SetActive(false);
+                T2SelectionRing.SetActive(false);
+                T3SelectionRing.SetActive(false);
             }
 
             // Third menu selection
-            if (CurrentSelected == 3)
+            if (CurrentSelected > 2)
             {
 
                 Menu3.SetActive(true);
@@ -510,28 +740,16 @@ public class ContentManager : MonoBehaviour
                     FloatingT1ImageHolder.SetActive(false);
                 }
 
-                // T1 Videos
+                // T1 Timeline
                 if (MenuOption1 == 1 && MenuOption2 == 2)
                 {
-                    T1VideoHolder.SetActive(true);
-                    FloatingT1VideoHolder.SetActive(true);
+                    T1TimelineHolder.SetActive(true);
+                    FloatingT1TimelineHolder.SetActive(true);
                 }
                 else
                 {
-                    T1VideoHolder.SetActive(false);
-                    FloatingT1VideoHolder.SetActive(false);
-                }
-
-                // T1 Docs
-                if (MenuOption1 == 1 && MenuOption2 == 3)
-                {
-                    T1DocumentHolder.SetActive(true);
-                    FloatingT1DocumentHolder.SetActive(true);
-                }
-                else
-                {
-                    T1DocumentHolder.SetActive(false);
-                    FloatingT1DocumentHolder.SetActive(false);
+                    T1TimelineHolder.SetActive(false);
+                    FloatingT1TimelineHolder.SetActive(false);
                 }
 
                 // T2
@@ -541,6 +759,18 @@ public class ContentManager : MonoBehaviour
                 {
                     T2ImageHolder.SetActive(true);
                     FloatingT2ImageHolder.SetActive(true);
+
+                    for (int i = 0; i < T2Images.Length; i++)
+                    {
+                        if (i == CurrentT2Image - 1)
+                        {
+                            T2Images[i].SetActive(true);
+                        }
+                        else
+                        {
+                            T2Images[i].SetActive(false);
+                        }
+                    }
                 }
                 else
                 {
@@ -553,6 +783,18 @@ public class ContentManager : MonoBehaviour
                 {
                     T2VideoHolder.SetActive(true);
                     FloatingT2VideoHolder.SetActive(true);
+
+                    for (int i = 0; i < T2Videos.Length; i++)
+                    {
+                        if (i == CurrentT2Video - 1)
+                        {
+                            T2Videos[i].SetActive(true);
+                        }
+                        else
+                        {
+                            T2Videos[i].SetActive(false);
+                        }
+                    }
                 }
                 else
                 {
@@ -560,16 +802,16 @@ public class ContentManager : MonoBehaviour
                     FloatingT2VideoHolder.SetActive(false);
                 }
 
-                // T2 Docs
+                // T2 Timeline
                 if (MenuOption1 == 2 && MenuOption2 == 3)
                 {
-                    T2DocumentHolder.SetActive(true);
-                    FloatingT2DocumentHolder.SetActive(true);
+                    T2TimelineHolder.SetActive(true);
+                    FloatingT2TimelineHolder.SetActive(true);
                 }
                 else
                 {
-                    T2DocumentHolder.SetActive(false);
-                    FloatingT2DocumentHolder.SetActive(false);
+                    T2TimelineHolder.SetActive(false);
+                    FloatingT2TimelineHolder.SetActive(false);
                 }
 
                 // T3
@@ -579,6 +821,18 @@ public class ContentManager : MonoBehaviour
                 {
                     T3ImageHolder.SetActive(true);
                     FloatingT3ImageHolder.SetActive(true);
+
+                    for (int i = 0; i < T3Images.Length; i++)
+                    {
+                        if (i == CurrentT3Image - 1)
+                        {
+                            T3Images[i].SetActive(true);
+                        }
+                        else
+                        {
+                            T3Images[i].SetActive(false);
+                        }
+                    }
                 }
                 else
                 {
@@ -598,54 +852,28 @@ public class ContentManager : MonoBehaviour
                     FloatingT3VideoHolder.SetActive(false);
                 }
 
-                // T3 Docs
+                // T3 Archive
                 if (MenuOption1 == 3 && MenuOption2 == 3)
                 {
-                    T3DocumentHolder.SetActive(true);
-                    FloatingT3DocumentHolder.SetActive(true);
+                    T3ArchiveHolder.SetActive(true);
+                    FloatingT3ArchiveHolder.SetActive(true);
                 }
                 else
                 {
-                    T3DocumentHolder.SetActive(false);
-                    FloatingT3DocumentHolder.SetActive(false);
+                    T3ArchiveHolder.SetActive(false);
+                    FloatingT3ArchiveHolder.SetActive(false);
                 }
 
-                // T4
-
-                // T4 Images
-                if (MenuOption1 == 4 && MenuOption2 == 1)
+                // T3 Timeline
+                if (MenuOption1 == 3 && MenuOption2 == 4)
                 {
-                    T4ImageHolder.SetActive(true);
-                    FloatingT4ImageHolder.SetActive(true);
+                    T3TimelineHolder.SetActive(true);
+                    FloatingT3TimelineHolder.SetActive(true);
                 }
                 else
                 {
-                    T4ImageHolder.SetActive(false);
-                    FloatingT4ImageHolder.SetActive(false);
-                }
-
-                // T4 Videos
-                if (MenuOption1 == 4 && MenuOption2 == 2)
-                {
-                    T4VideoHolder.SetActive(true);
-                    FloatingT4VideoHolder.SetActive(true);
-                }
-                else
-                {
-                    T4VideoHolder.SetActive(false);
-                    FloatingT4VideoHolder.SetActive(false);
-                }
-
-                // T4 Docs
-                if (MenuOption1 == 4 && MenuOption2 == 3)
-                {
-                    T4DocumentHolder.SetActive(true);
-                    FloatingT4DocumentHolder.SetActive(true);
-                }
-                else
-                {
-                    T4DocumentHolder.SetActive(false);
-                    FloatingT4DocumentHolder.SetActive(false);
+                    T3TimelineHolder.SetActive(false);
+                    FloatingT3TimelineHolder.SetActive(false);
                 }
 
             }
@@ -657,22 +885,132 @@ public class ContentManager : MonoBehaviour
         }
     }
 
+    private void PlayVideo()
+    {
+        // if T2 Videos
+        if (MenuOption1 == 2)
+        {
+            // videos
+            if (MenuOption2 == 2)
+            {
+                if (videoPlaying == false)
+                {
+                    //play video
+                    videoPlaying = true;
+                    T2Videos[CurrentT2Video - 1].GetComponent<HideCoverImage>().HideImage();
+                    MyVideoPlayer = T2Videos[CurrentT2Video - 1].GetComponent<VideoPlayer>();
+                    MyVideoPlayer.Play();
+                }
+            }
+        }
+
+        // if T3 Videos
+        if (MenuOption1 == 3)
+        {
+            // videos
+            if (MenuOption2 == 2)
+            {
+                if (videoPlaying == false)
+                {
+                    //play video
+                    videoPlaying = true;
+                }
+            }
+        }
+    }
+
+    private void PauseVideo()
+    {
+        // if T2 Videos
+        if (MenuOption1 == 2)
+        {
+            // videos
+            if (MenuOption2 == 2)
+            {
+                if (videoPlaying == true)
+                {
+                    //pause video
+                    videoPlaying = false;
+                    MyVideoPlayer.Pause();
+                }
+            }
+        }
+
+        // if T3 Videos
+        if (MenuOption1 == 3)
+        {
+            // videos
+            if (MenuOption2 == 2)
+            {
+                if (videoPlaying == true)
+                {
+                    //play video
+                    videoPlaying = false;
+                }
+            }
+        }
+    }
+
+    private void SetUpT1()
+    {
+        T1Narrative.SetActive(true);
+        NarrativeHolder.SetActive(true);
+        MainRoom.SetActive(false);
+        T1Room.SetActive(true);
+    }
+
+    private void SetUpT2()
+    {
+        T2Narrative.SetActive(true);
+        NarrativeHolder.SetActive(true);
+        MainRoom.SetActive(false);
+        T2Room.SetActive(true);
+    }
+
+    private void SetUpT3()
+    {
+        T3Narrative.SetActive(true);
+        NarrativeHolder.SetActive(true);
+        MainRoom.SetActive(false);
+        T3Room.SetActive(true);
+    }
+
+    private void SetUpMain()
+    {
+        T1Narrative.SetActive(false);
+        T2Narrative.SetActive(false);
+        T3Narrative.SetActive(false);
+
+        NarrativeHolder.SetActive(false);
+
+        T1Room.SetActive(false);
+        T2Room.SetActive(false);
+        T3Room.SetActive(false);
+
+        MainRoom.SetActive(true);
+    }
+
     private void ResetValues()
     {
         CurrentT1Image = 1;
-        CurrentT1Video = 1;
-        CurrentT1Document = 1;
+        CurrentT1Timeline = 1;
 
         CurrentT2Image = 1;
         CurrentT2Video = 1;
-        CurrentT2Document = 1;
+        CurrentT2Timeline = 1;
 
         CurrentT3Image = 1;
         CurrentT3Video = 1;
-        CurrentT3Document = 1;
+        CurrentT3Archive = 1;
+        CurrentT3Timeline = 1;
 
-        CurrentT4Image = 1;
-        CurrentT4Video = 1;
-        CurrentT4Document = 1;
+        CurrentT1Page = 1;
+        CurrentT2Page = 1;
+        CurrentT3Page = 1;
+
+        TimelinePos.transform.position = TimelineOriginalPos.transform.position;
+
+        NarrativePos.transform.position = NarrativeOriginalPos.transform.position;
+
     }
 }
