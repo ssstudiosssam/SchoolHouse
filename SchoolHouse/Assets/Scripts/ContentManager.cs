@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Video;
+using UnityEngine.SceneManagement;
 
 public class ContentManager : MonoBehaviour
 {
@@ -24,7 +25,10 @@ public class ContentManager : MonoBehaviour
 
     public GameObject[] T1Images, T2Images, T3Images;
 
-    public GameObject[] T2Videos;
+    public GameObject[] T3Archive;
+
+    public GameObject[] T2Videos, T3Videos;
+
     private VideoPlayer MyVideoPlayer;
 
     public Transform[] Menu1Positions;
@@ -69,6 +73,16 @@ public class ContentManager : MonoBehaviour
     public GameObject T1Narrative, T2Narrative, T3Narrative;
 
     public Text T1PageText, T2PageText, T3PageText;
+
+    private bool T1Playing = false, T2Playing = false, T3Playing = false, MenuPlaying = true;
+
+    private bool T1Done = false, T2Done = false, T3Done = false;
+
+    public Image T1Image, T2Image, T3Image;
+
+    public GameObject FinalText;
+
+    public bool ExperienceFinished = false;
 
     // Start is called before the first frame update
     void Start()
@@ -178,6 +192,19 @@ public class ContentManager : MonoBehaviour
             MenuOptionText2.color = Color.red;
 
             PanelInstructionText.text = "SCROLL THROUGH CONTENT";
+
+            // T2 Videos
+            if (MenuOption1 == 2 && MenuOption2 == 2)
+            {
+                PanelInstructionText.text = "SCROLL THROUGH CONTENT - GREEN TO PLAY";
+            }
+
+            // T3 Videos
+            if (MenuOption1 == 3 && MenuOption2 == 2)
+            {
+                PanelInstructionText.text = "SCROLL THROUGH CONTENT - GREEN TO PLAY";
+            }
+
         }
 
         if (NarrativeVisible == true)
@@ -190,7 +217,6 @@ public class ContentManager : MonoBehaviour
 
     public void IncreaseCurrentSelected()
     {
-
         if (menuVisible == true && NarrativeVisible == false)
         {
             if (CurrentSelected == 1)
@@ -306,6 +332,8 @@ public class ContentManager : MonoBehaviour
                     NarrativeVisible = false;
                     Invoke("SetUpMain", 3.0f);
                     //T1 DONE
+                    T1Done = true;
+                    UpdatePanel();
                 }
 
                 if (MenuOption1 == 2)
@@ -314,6 +342,8 @@ public class ContentManager : MonoBehaviour
                     NarrativeVisible = false;
                     Invoke("SetUpMain", 3.0f);
                     //T2 DONE
+                    T2Done = true;
+                    UpdatePanel();
                 }
 
                 if (MenuOption1 == 3)
@@ -322,6 +352,8 @@ public class ContentManager : MonoBehaviour
                     NarrativeVisible = false;
                     Invoke("SetUpMain", 3.0f);
                     //T3 DONE
+                    T3Done = true;
+                    UpdatePanel();
                 }
             }
 
@@ -415,13 +447,13 @@ public class ContentManager : MonoBehaviour
                     }
 
                     // videos
-                    if (MenuOption2 == 2 && CurrentT3Video < 10)
+                    if (MenuOption2 == 2 && CurrentT3Video < T3Videos.Length)
                     {
                         CurrentT3Video++;
                     }
 
                     // archive
-                    if (MenuOption2 == 3 && CurrentT3Archive < 10)
+                    if (MenuOption2 == 3 && CurrentT3Archive < T3Archive.Length)
                     {
                         CurrentT3Archive++;
                     }
@@ -452,7 +484,7 @@ public class ContentManager : MonoBehaviour
                 NarrativePos.transform.localPosition -= new Vector3(2.00f, 0, 0);
             }
 
-            if (MenuOption1 == 3 && CurrentT3Page < 11)
+            if (MenuOption1 == 3 && CurrentT3Page < 4)
             {
                 CurrentT3Page++;
                 NarrativePos.transform.localPosition -= new Vector3(2.00f, 0, 0);
@@ -845,6 +877,18 @@ public class ContentManager : MonoBehaviour
                 {
                     T3VideoHolder.SetActive(true);
                     FloatingT3VideoHolder.SetActive(true);
+
+                    for (int i = 0; i < T3Videos.Length; i++)
+                    {
+                        if (i == CurrentT3Video - 1)
+                        {
+                            T3Videos[i].SetActive(true);
+                        }
+                        else
+                        {
+                            T3Videos[i].SetActive(false);
+                        }
+                    }
                 }
                 else
                 {
@@ -857,6 +901,18 @@ public class ContentManager : MonoBehaviour
                 {
                     T3ArchiveHolder.SetActive(true);
                     FloatingT3ArchiveHolder.SetActive(true);
+
+                    for (int i = 0; i < T3Archive.Length; i++)
+                    {
+                        if (i == CurrentT3Archive - 1)
+                        {
+                            T3Archive[i].SetActive(true);
+                        }
+                        else
+                        {
+                            T3Archive[i].SetActive(false);
+                        }
+                    }
                 }
                 else
                 {
@@ -900,6 +956,13 @@ public class ContentManager : MonoBehaviour
                     T2Videos[CurrentT2Video - 1].GetComponent<HideCoverImage>().HideImage();
                     MyVideoPlayer = T2Videos[CurrentT2Video - 1].GetComponent<VideoPlayer>();
                     MyVideoPlayer.Play();
+
+                    //stop background music
+                    if (T2Playing == true)
+                    {
+                        FindObjectOfType<AudioController>().StopPlaying("T2MenuMusic");
+                        T2Playing = false;
+                    }
                 }
             }
         }
@@ -914,9 +977,22 @@ public class ContentManager : MonoBehaviour
                 {
                     //play video
                     videoPlaying = true;
+                    T3Videos[CurrentT3Video - 1].GetComponent<HideCoverImage>().HideImage();
+                    MyVideoPlayer = T3Videos[CurrentT3Video - 1].GetComponent<VideoPlayer>();
+                    MyVideoPlayer.Play();
+
+                    //stop background music
+                    if (T3Playing == true)
+                    {
+                        FindObjectOfType<AudioController>().StopPlaying("T3MenuMusic");
+                        T3Playing = false;
+                    }
                 }
             }
         }
+
+        //update text
+        PanelInstructionText.text = "SCROLL THROUGH CONTENT - RED TO STOP";
     }
 
     private void PauseVideo()
@@ -932,6 +1008,16 @@ public class ContentManager : MonoBehaviour
                     //pause video
                     videoPlaying = false;
                     MyVideoPlayer.Pause();
+
+                    //play background music
+                    if (T2Playing == false)
+                    {
+                        FindObjectOfType<AudioController>().Play("T2MenuMusic");
+                        T2Playing = true;
+                    }
+
+                    //update text
+                    PanelInstructionText.text = "SCROLL THROUGH CONTENT";
                 }
             }
         }
@@ -946,6 +1032,14 @@ public class ContentManager : MonoBehaviour
                 {
                     //play video
                     videoPlaying = false;
+                    MyVideoPlayer.Pause();
+
+                    //play background music
+                    if (T3Playing == false)
+                    {
+                        FindObjectOfType<AudioController>().Play("T3MenuMusic");
+                        T3Playing = true;
+                    }
                 }
             }
         }
@@ -957,6 +1051,17 @@ public class ContentManager : MonoBehaviour
         NarrativeHolder.SetActive(true);
         MainRoom.SetActive(false);
         T1Room.SetActive(true);
+
+        if (MenuPlaying == true)
+        {
+            FindObjectOfType<AudioController>().StopPlaying("StartMenuMusic");
+            FindObjectOfType<AudioController>().StopPlaying("BackMenuMusic");
+
+            MenuPlaying = false;
+        }
+
+        FindObjectOfType<AudioController>().Play("T1MenuMusic");
+        T1Playing = true;
     }
 
     private void SetUpT2()
@@ -965,6 +1070,17 @@ public class ContentManager : MonoBehaviour
         NarrativeHolder.SetActive(true);
         MainRoom.SetActive(false);
         T2Room.SetActive(true);
+
+        if (MenuPlaying == true)
+        {
+            FindObjectOfType<AudioController>().StopPlaying("StartMenuMusic");
+            FindObjectOfType<AudioController>().StopPlaying("BackMenuMusic");
+
+            MenuPlaying = false;
+        }
+
+        FindObjectOfType<AudioController>().Play("T2MenuMusic");
+        T2Playing = true;
     }
 
     private void SetUpT3()
@@ -973,6 +1089,17 @@ public class ContentManager : MonoBehaviour
         NarrativeHolder.SetActive(true);
         MainRoom.SetActive(false);
         T3Room.SetActive(true);
+
+        if (MenuPlaying == true)
+        {
+            FindObjectOfType<AudioController>().StopPlaying("StartMenuMusic");
+            FindObjectOfType<AudioController>().StopPlaying("BackMenuMusic");
+
+            MenuPlaying = false;
+        }
+
+        FindObjectOfType<AudioController>().Play("T3MenuMusic");
+        T3Playing = true;
     }
 
     private void SetUpMain()
@@ -988,6 +1115,27 @@ public class ContentManager : MonoBehaviour
         T3Room.SetActive(false);
 
         MainRoom.SetActive(true);
+
+        if (T1Playing == true)
+        {
+            FindObjectOfType<AudioController>().StopPlaying("T1MenuMusic");
+            T1Playing = false;
+        }
+
+        if (T2Playing == true)
+        {
+            FindObjectOfType<AudioController>().StopPlaying("T2MenuMusic");
+            T2Playing = false;
+        }
+
+        if (T3Playing == true)
+        {
+            FindObjectOfType<AudioController>().StopPlaying("T3MenuMusic");
+            T3Playing = false;
+        }
+
+        FindObjectOfType<AudioController>().Play("BackMenuMusic");
+        MenuPlaying = true;
     }
 
     private void ResetValues()
@@ -1013,4 +1161,63 @@ public class ContentManager : MonoBehaviour
         NarrativePos.transform.position = NarrativeOriginalPos.transform.position;
 
     }
+
+    private void UpdatePanel()
+    {
+        if (T1Done == true)
+        {
+            T1Image.color = new Color32(0, 255, 0, 128);
+        }
+
+        if (T2Done == true)
+        {
+            T2Image.color = new Color32(0, 255, 0, 128);
+        }
+
+        if (T3Done == true)
+        {
+            T3Image.color = new Color32(0, 255, 0, 128);
+        }
+
+        if (T1Done == true && T2Done == true && T3Done == true)
+        {
+            FinalText.SetActive(true);
+            ExperienceFinished = true;
+        }
+    }
+
+    public void BackHome()
+    {
+        if (ExperienceFinished == true)
+        {
+            if (T1Playing == true)
+            {
+                FindObjectOfType<AudioController>().StopPlaying("T1MenuMusic");
+                T1Playing = false;
+            }
+
+            if (T2Playing == true)
+            {
+                FindObjectOfType<AudioController>().StopPlaying("T2MenuMusic");
+                T2Playing = false;
+            }
+
+            if (T3Playing == true)
+            {
+                FindObjectOfType<AudioController>().StopPlaying("T3MenuMusic");
+                T3Playing = false;
+            }
+
+            if (MenuPlaying == true)
+            {
+                FindObjectOfType<AudioController>().StopPlaying("StartMenuMusic");
+                FindObjectOfType<AudioController>().StopPlaying("BackMenuMusic");
+
+                MenuPlaying = false;
+            }
+
+            SceneManager.LoadScene("Menu");
+        }
+    }
+
 }

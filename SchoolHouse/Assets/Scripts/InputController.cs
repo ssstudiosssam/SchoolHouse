@@ -449,6 +449,7 @@ public class InputController : MonoBehaviour
         Button3.transform.parent = GlobalReference.transform;
         Button4.transform.parent = GlobalReference.transform;
 
+        FindObjectOfType<AudioController>().Play("StartMenuMusic");
     }
 
     private void ResetGlobalPosition()
