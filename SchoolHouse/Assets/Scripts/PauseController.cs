@@ -57,5 +57,11 @@ public class PauseController : MonoBehaviour
     void Home()
     {
         SceneManager.LoadScene("Menu");
+
+        FindObjectOfType<AudioController>().StopPlaying("T1MenuMusic");
+        FindObjectOfType<AudioController>().StopPlaying("T2MenuMusic");
+        FindObjectOfType<AudioController>().StopPlaying("T3MenuMusic");
+        FindObjectOfType<AudioController>().StopPlaying("StartMenuMusic");
+        FindObjectOfType<AudioController>().StopPlaying("BackMenuMusic");
     }
 }

@@ -79,9 +79,9 @@ public class ChairBuilder : MonoBehaviour
         AddedLengthRight = DirectionLengthRight * Mathf.Cos((RightAngle * Mathf.Deg2Rad));
 
         // Add required length
-        ChairSurface.transform.localScale = new Vector3(AddedLengthRight + 0.25f, ChairSurface.transform.localScale.y, ChairSurface.transform.localScale.z);
+        ChairSurface.transform.localScale = new Vector3((AddedLengthRight * 2f) + 0.5f, ChairSurface.transform.localScale.y, ChairSurface.transform.localScale.z);
 
-        ChairBackSurface.transform.localScale = new Vector3(AddedLengthRight + 0.25f, ChairBackSurface.transform.localScale.y, ChairBackSurface.transform.localScale.z);
+        ChairBackSurface.transform.localScale = new Vector3((AddedLengthRight * 2f) + 0.5f, ChairBackSurface.transform.localScale.y, ChairBackSurface.transform.localScale.z);
 
         // Move chair into position after length is added
         ChairSurface.transform.localPosition += new Vector3((AddedLengthRight / 2) - 0.125f, 0, 0);
@@ -110,9 +110,9 @@ public class ChairBuilder : MonoBehaviour
         AddedLengthLeft = DirectionLengthLeft * Mathf.Cos((LeftAngle * Mathf.Deg2Rad));
 
         // Add required length
-        ChairSurface.transform.localScale = new Vector3(AddedLengthLeft + AddedLengthRight, ChairSurface.transform.localScale.y, ChairSurface.transform.localScale.z);
+        ChairSurface.transform.localScale = new Vector3((AddedLengthLeft * 2) + (AddedLengthRight * 2), ChairSurface.transform.localScale.y, ChairSurface.transform.localScale.z);
 
-        ChairBackSurface.transform.localScale = new Vector3(AddedLengthLeft + AddedLengthRight, ChairBackSurface.transform.localScale.y, ChairBackSurface.transform.localScale.z);
+        ChairBackSurface.transform.localScale = new Vector3((AddedLengthLeft * 2) + (AddedLengthRight * 2), ChairBackSurface.transform.localScale.y, ChairBackSurface.transform.localScale.z);
 
         // Move chair into position after length is added
         ChairSurface.transform.localPosition -= new Vector3((AddedLengthLeft / 2) - 0.125f, 0, 0);
@@ -141,12 +141,12 @@ public class ChairBuilder : MonoBehaviour
         AddedLengthBack = DirectionLengthBack * Mathf.Cos((BackAngle * Mathf.Deg2Rad));
 
         // Add required length
-        ChairSurface.transform.localScale = new Vector3(ChairSurface.transform.localScale.x, ChairSurface.transform.localScale.y, AddedLengthBack + 0.25f);
+        ChairSurface.transform.localScale = new Vector3(ChairSurface.transform.localScale.x, ChairSurface.transform.localScale.y, (AddedLengthBack * 2f) + 0.5f);
 
         // Move chair into position after length is added
         ChairSurface.transform.localPosition += new Vector3(0, 0, (AddedLengthBack / 2) - 0.125f);
 
-        ChairBack.transform.localPosition = new Vector3(0, 0, ChairSurface.transform.localScale.z);
+        ChairBack.transform.localPosition = new Vector3(0, 0, ChairSurface.transform.localScale.z / 2);
 
         UpdateTexture();
         PlaceLegs();
@@ -170,7 +170,7 @@ public class ChairBuilder : MonoBehaviour
         AddedLengthUp = DirectionLengthUp * Mathf.Cos((UpAngle * Mathf.Deg2Rad));
 
         // Add required length
-        ChairBackSurface.transform.localScale = new Vector3(ChairBackSurface.transform.localScale.x, AddedLengthUp + 0.25f, ChairBackSurface.transform.localScale.z);
+        ChairBackSurface.transform.localScale = new Vector3(ChairBackSurface.transform.localScale.x, ChairBackSurface.transform.localScale.y, (AddedLengthUp * 2) + 0.5f);
 
         // Move chair into position after length is added
         ChairBackSurface.transform.localPosition += new Vector3(0, (AddedLengthUp / 2) - 0.125f, 0);
@@ -182,16 +182,16 @@ public class ChairBuilder : MonoBehaviour
     // Update the texture applied to the chair
     private void UpdateTexture()
     {
-        ChairMaterialRenderer.material.SetTextureScale("_MainTex", new Vector2(ChairSurface.transform.localScale.x, ChairSurface.transform.localScale.z));
-        ChairBackMaterialRenderer.material.SetTextureScale("_MainTex", new Vector2(ChairBackSurface.transform.localScale.x, ChairBackSurface.transform.localScale.y));
+        ChairMaterialRenderer.material.SetTextureScale("_MainTex", new Vector2(ChairSurface.transform.localScale.x * 4, ChairSurface.transform.localScale.z * 4));
+        ChairBackMaterialRenderer.material.SetTextureScale("_MainTex", new Vector2(ChairBackSurface.transform.localScale.x * 4, ChairBackSurface.transform.localScale.y * 4));
     }
 
     // Place the legs of the desk in position regarding new chair size/position
     private void PlaceLegs()
     {
-        Leg1.transform.localPosition = new Vector3((ChairSurface.transform.localPosition.x - (ChairSurface.transform.localScale.x / 2)) + 0.05f, ChairTop.transform.localPosition.y, (ChairSurface.transform.localPosition.z - (ChairSurface.transform.localScale.z / 2)) + 0.05f);
-        Leg2.transform.localPosition = new Vector3((ChairSurface.transform.localPosition.x - (ChairSurface.transform.localScale.x / 2)) + 0.05f, ChairTop.transform.localPosition.y, (ChairSurface.transform.localPosition.z + (ChairSurface.transform.localScale.z / 2)) - 0.05f);
-        Leg3.transform.localPosition = new Vector3((ChairSurface.transform.localPosition.x + (ChairSurface.transform.localScale.x / 2)) - 0.05f, ChairTop.transform.localPosition.y, (ChairSurface.transform.localPosition.z - (ChairSurface.transform.localScale.z / 2)) + 0.05f);
-        Leg4.transform.localPosition = new Vector3((ChairSurface.transform.localPosition.x + (ChairSurface.transform.localScale.x / 2)) - 0.05f, ChairTop.transform.localPosition.y, (ChairSurface.transform.localPosition.z + (ChairSurface.transform.localScale.z / 2)) - 0.05f);
+        Leg1.transform.localPosition = new Vector3((ChairSurface.transform.localPosition.x - (ChairSurface.transform.localScale.x / 4)) + 0.05f, ChairTop.transform.localPosition.y, (ChairSurface.transform.localPosition.z - (ChairSurface.transform.localScale.z / 4)) + 0.05f);
+        Leg2.transform.localPosition = new Vector3((ChairSurface.transform.localPosition.x - (ChairSurface.transform.localScale.x / 4)) + 0.05f, ChairTop.transform.localPosition.y, (ChairSurface.transform.localPosition.z + (ChairSurface.transform.localScale.z / 4)) - 0.05f);
+        Leg3.transform.localPosition = new Vector3((ChairSurface.transform.localPosition.x + (ChairSurface.transform.localScale.x / 4)) - 0.05f, ChairTop.transform.localPosition.y, (ChairSurface.transform.localPosition.z - (ChairSurface.transform.localScale.z / 4)) + 0.05f);
+        Leg4.transform.localPosition = new Vector3((ChairSurface.transform.localPosition.x + (ChairSurface.transform.localScale.x / 4)) - 0.05f, ChairTop.transform.localPosition.y, (ChairSurface.transform.localPosition.z + (ChairSurface.transform.localScale.z / 4)) - 0.05f);
     }
 }

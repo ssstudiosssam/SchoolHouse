@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Video;
 using UnityEngine.SceneManagement;
+using TMPro;
 
 public class ContentManager : MonoBehaviour
 {
@@ -15,6 +16,8 @@ public class ContentManager : MonoBehaviour
     public Text MenuOptionText1, MenuOptionText2;
 
     public Text T1ImageText, T1TimelineText, T2ImageText, T2VideoText, T2TimelineText, T3ImageText, T3VideoText, T3ArchiveText, T3TimelineText;
+
+    public TextMeshProUGUI T1ImageNumberText, T2ImageNumberText, T3ImageNumberText, T2VideoNumberText, T3VideoNumberText, T3ArchiveNumberText, T1PageText, T2PageText, T3PageText;
 
     public Text CurrentSelectedText;
 
@@ -50,8 +53,6 @@ public class ContentManager : MonoBehaviour
 
     public GameObject FloatingT1ImageHolder, FloatingT1TimelineHolder, FloatingT2ImageHolder, FloatingT2VideoHolder, FloatingT2TimelineHolder, FloatingT3ImageHolder, FloatingT3VideoHolder, FloatingT3ArchiveHolder, FloatingT3TimelineHolder;
 
-    public Text PanelInstructionText;
-
     public GameObject T1Timeline, T2Timeline, T3Timeline;
     public GameObject TimelinePos, TimelineOriginalPos;
 
@@ -60,6 +61,8 @@ public class ContentManager : MonoBehaviour
     public Fader fader;
 
     public GameObject MainRoom, T1Room, T2Room, T3Room;
+
+    public GameObject PanelIns1, PanelIns2, PanelIns3, PanelIns4, PanelIns5, PanelIns6, PanelIns7;
 
     // Narrative
     private bool NarrativeVisible = false;
@@ -71,14 +74,15 @@ public class ContentManager : MonoBehaviour
     private int CurrentT1Page, CurrentT2Page, CurrentT3Page;
 
     public GameObject T1Narrative, T2Narrative, T3Narrative;
-
-    public Text T1PageText, T2PageText, T3PageText;
+    public GameObject T1NarrativeDesk, T2NarrativeDesk, T3NarrativeDesk;
 
     private bool T1Playing = false, T2Playing = false, T3Playing = false, MenuPlaying = true;
 
     private bool T1Done = false, T2Done = false, T3Done = false;
 
     public Image T1Image, T2Image, T3Image;
+
+    private bool FadeBack = false;
 
     public GameObject FinalText;
 
@@ -143,23 +147,23 @@ public class ContentManager : MonoBehaviour
         MenuOptionText1.text = MenuOption1.ToString() + ".";
         MenuOptionText2.text = MenuOption2.ToString() + ".";
 
-        T1ImageText.text = CurrentT1Image.ToString();
+        T1ImageNumberText.text = CurrentT1Image.ToString() + "/" + T1Images.Length.ToString();
         T1TimelineText.text = CurrentT1Timeline.ToString();
 
-        T2ImageText.text = CurrentT2Image.ToString();
-        T2VideoText.text = CurrentT2Video.ToString();
+        T2ImageNumberText.text = CurrentT2Image.ToString() + "/" + T2Images.Length.ToString();
+        T2VideoNumberText.text = CurrentT2Video.ToString() + "/" + T2Videos.Length.ToString();
         T2TimelineText.text = CurrentT2Timeline.ToString();
 
-        T3ImageText.text = CurrentT3Image.ToString();
-        T3VideoText.text = CurrentT3Video.ToString();
-        T3ArchiveText.text = CurrentT3Archive.ToString();
+        T3ImageNumberText.text = CurrentT3Image.ToString() + "/" + T3Images.Length.ToString();
+        T3VideoNumberText.text = CurrentT3Video.ToString() + "/" + T3Videos.Length.ToString();
+        T3ArchiveNumberText.text = CurrentT3Archive.ToString() + "/" + T3Archive.Length.ToString();
         T3TimelineText.text = CurrentT3Timeline.ToString();
 
         CurrentSelectedText.text = CurrentSelected.ToString();
 
-        T1PageText.text = CurrentT1Page.ToString();
-        T2PageText.text = CurrentT2Page.ToString();
-        T3PageText.text = CurrentT3Page.ToString();
+        T1PageText.text = CurrentT1Page.ToString() + "/" + "4";
+        T2PageText.text = CurrentT2Page.ToString() + "/" + "5";
+        T3PageText.text = CurrentT3Page.ToString() + "/" + "4";
 
         if (videoPlaying == true)
         {
@@ -174,45 +178,29 @@ public class ContentManager : MonoBehaviour
         {
             MenuOptionText1.color = Color.green;
             MenuOptionText2.color = Color.red;
-
-            PanelInstructionText.text = "PICK A TIME IN HISTORY";
         }
 
         if (CurrentSelected == 2 && NarrativeVisible == false)
         {
             MenuOptionText1.color = Color.red;
             MenuOptionText2.color = Color.green;
-
-            PanelInstructionText.text = "CHOOSE CONTENT";
         }
 
         if (CurrentSelected == 3 && NarrativeVisible == false)
         {
             MenuOptionText1.color = Color.red;
             MenuOptionText2.color = Color.red;
-
-            PanelInstructionText.text = "SCROLL THROUGH CONTENT";
-
-            // T2 Videos
-            if (MenuOption1 == 2 && MenuOption2 == 2)
-            {
-                PanelInstructionText.text = "SCROLL THROUGH CONTENT - GREEN TO PLAY";
-            }
-
-            // T3 Videos
-            if (MenuOption1 == 3 && MenuOption2 == 2)
-            {
-                PanelInstructionText.text = "SCROLL THROUGH CONTENT - GREEN TO PLAY";
-            }
-
         }
 
-        if (NarrativeVisible == true)
+        if (NarrativeVisible == true || FadeBack == true)
         {
-            PanelInstructionText.text = "ARROWS TO SCROLL - GREEN TO SKIP/CONTINUE";
+            Invoke("ShowCorrectContent", 3.0f);
+        }
+        else
+        {
+            ShowCorrectContent();
         }
 
-        ShowCorrectContent();
     }
 
     public void IncreaseCurrentSelected()
@@ -284,6 +272,7 @@ public class ContentManager : MonoBehaviour
             {
                 NarrativeVisible = false;
                 T1Narrative.SetActive(false);
+                T1NarrativeDesk.SetActive(false);
                 NarrativeHolder.SetActive(false);
             }
 
@@ -291,6 +280,7 @@ public class ContentManager : MonoBehaviour
             {
                 NarrativeVisible = false;
                 T2Narrative.SetActive(false);
+                T2NarrativeDesk.SetActive(false);
                 NarrativeHolder.SetActive(false);
             }
 
@@ -298,6 +288,7 @@ public class ContentManager : MonoBehaviour
             {
                 NarrativeVisible = false;
                 T3Narrative.SetActive(false);
+                T3NarrativeDesk.SetActive(false);
                 NarrativeHolder.SetActive(false);
             }
 
@@ -333,7 +324,8 @@ public class ContentManager : MonoBehaviour
                     Invoke("SetUpMain", 3.0f);
                     //T1 DONE
                     T1Done = true;
-                    UpdatePanel();
+                    FadeBack = true;
+                    Invoke("UpdatePanel", 3);
                 }
 
                 if (MenuOption1 == 2)
@@ -343,7 +335,8 @@ public class ContentManager : MonoBehaviour
                     Invoke("SetUpMain", 3.0f);
                     //T2 DONE
                     T2Done = true;
-                    UpdatePanel();
+                    FadeBack = true;
+                    Invoke("UpdatePanel", 3);
                 }
 
                 if (MenuOption1 == 3)
@@ -353,7 +346,8 @@ public class ContentManager : MonoBehaviour
                     Invoke("SetUpMain", 3.0f);
                     //T3 DONE
                     T3Done = true;
-                    UpdatePanel();
+                    FadeBack = true;
+                    Invoke("UpdatePanel", 3);
                 }
             }
 
@@ -614,14 +608,27 @@ public class ContentManager : MonoBehaviour
 
     private void ShowCorrectContent()
     {
+        FadeBack = false;
+
         if (menuVisible == true)
         {
             // First menu selection
             if (CurrentSelected == 1)
             {
                 Menu1.SetActive(true);
-
                 selectionRing1.SetActive(true);
+                HideAllInstructions();
+
+                if (ExperienceFinished == false)
+                {
+                    PanelIns6.SetActive(true);
+                }
+                else
+                {
+                    Menu1.SetActive(false);
+                    selectionRing1.SetActive(false);
+                    PanelIns6.SetActive(false);
+                }
 
                 if (MenuOption1 == 1)
                 {
@@ -648,6 +655,9 @@ public class ContentManager : MonoBehaviour
             if (CurrentSelected == 2 && NarrativeVisible == false)
             {
                 Menu2.SetActive(true);
+
+                HideAllInstructions();
+                PanelIns5.SetActive(true);
 
                 // Show correct options
                 // T1 Options
@@ -744,6 +754,10 @@ public class ContentManager : MonoBehaviour
             {
 
                 Menu3.SetActive(true);
+
+                HideAllInstructions();
+                PanelIns2.SetActive(true);
+
                 FloatingContent.SetActive(true);
 
                 // T1
@@ -816,6 +830,9 @@ public class ContentManager : MonoBehaviour
                     T2VideoHolder.SetActive(true);
                     FloatingT2VideoHolder.SetActive(true);
 
+                    HideAllInstructions();
+                    PanelIns4.SetActive(true);
+
                     for (int i = 0; i < T2Videos.Length; i++)
                     {
                         if (i == CurrentT2Video - 1)
@@ -877,6 +894,9 @@ public class ContentManager : MonoBehaviour
                 {
                     T3VideoHolder.SetActive(true);
                     FloatingT3VideoHolder.SetActive(true);
+
+                    HideAllInstructions();
+                    PanelIns4.SetActive(true);
 
                     for (int i = 0; i < T3Videos.Length; i++)
                     {
@@ -991,8 +1011,6 @@ public class ContentManager : MonoBehaviour
             }
         }
 
-        //update text
-        PanelInstructionText.text = "SCROLL THROUGH CONTENT - RED TO STOP";
     }
 
     private void PauseVideo()
@@ -1015,9 +1033,6 @@ public class ContentManager : MonoBehaviour
                         FindObjectOfType<AudioController>().Play("T2MenuMusic");
                         T2Playing = true;
                     }
-
-                    //update text
-                    PanelInstructionText.text = "SCROLL THROUGH CONTENT";
                 }
             }
         }
@@ -1047,7 +1062,11 @@ public class ContentManager : MonoBehaviour
 
     private void SetUpT1()
     {
+        HideAllInstructions();
+        PanelIns3.SetActive(true);
+
         T1Narrative.SetActive(true);
+        T1NarrativeDesk.SetActive(true);
         NarrativeHolder.SetActive(true);
         MainRoom.SetActive(false);
         T1Room.SetActive(true);
@@ -1066,7 +1085,11 @@ public class ContentManager : MonoBehaviour
 
     private void SetUpT2()
     {
+        HideAllInstructions();
+        PanelIns3.SetActive(true);
+
         T2Narrative.SetActive(true);
+        T2NarrativeDesk.SetActive(true);
         NarrativeHolder.SetActive(true);
         MainRoom.SetActive(false);
         T2Room.SetActive(true);
@@ -1085,7 +1108,11 @@ public class ContentManager : MonoBehaviour
 
     private void SetUpT3()
     {
+        HideAllInstructions();
+        PanelIns3.SetActive(true);
+
         T3Narrative.SetActive(true);
+        T3NarrativeDesk.SetActive(true);
         NarrativeHolder.SetActive(true);
         MainRoom.SetActive(false);
         T3Room.SetActive(true);
@@ -1104,9 +1131,16 @@ public class ContentManager : MonoBehaviour
 
     private void SetUpMain()
     {
+        HideAllInstructions();
+        PanelIns6.SetActive(true);
+
         T1Narrative.SetActive(false);
         T2Narrative.SetActive(false);
         T3Narrative.SetActive(false);
+
+        T1NarrativeDesk.SetActive(false);
+        T2NarrativeDesk.SetActive(false);
+        T3NarrativeDesk.SetActive(false);
 
         NarrativeHolder.SetActive(false);
 
@@ -1183,6 +1217,9 @@ public class ContentManager : MonoBehaviour
         {
             FinalText.SetActive(true);
             ExperienceFinished = true;
+
+            HideAllInstructions();
+            PanelIns7.SetActive(true);
         }
     }
 
@@ -1218,6 +1255,16 @@ public class ContentManager : MonoBehaviour
 
             SceneManager.LoadScene("Menu");
         }
+    }
+
+    private void HideAllInstructions()
+    {
+        PanelIns1.SetActive(false);
+        PanelIns2.SetActive(false);
+        PanelIns3.SetActive(false);
+        PanelIns4.SetActive(false);
+        PanelIns5.SetActive(false);
+        PanelIns6.SetActive(false);
     }
 
 }
