@@ -1,6 +1,7 @@
 using UnityEngine;
 using System;
 using UnityEngine.Audio;
+using System.Collections;
 
 public class AudioController : MonoBehaviour
 {
@@ -36,32 +37,100 @@ public class AudioController : MonoBehaviour
         }
     }
 
-    private void Start()
+    public void PlayMusic(string name)
     {
-    }
+        StopAllCoroutines();
 
-    public void Play(string name)
-    {
         Sound s = Array.Find(sounds, sound => sound.name == name);
 
         if (s == null)
         {
-            Debug.LogWarning("Sound: " + name + " not found");
             return;
         }
-
         s.source.Play();
+
+        StartCoroutine(FadeTrackIn(name));
     }
 
-    public void StopPlaying(string sound)
+    public void StopMusic(string name)
     {
-        Sound s = Array.Find(sounds, item => item.name == sound);
+        StopAllCoroutines();
+
+        Sound s = Array.Find(sounds, sound => sound.name == name);
+
         if (s == null)
         {
-            Debug.LogWarning("Sound: " + name + " not found");
             return;
         }
 
         s.source.Pause();
+    }
+
+    public void StopMusicAndReset(string name)
+    {
+        StopAllCoroutines();
+
+        Sound s = Array.Find(sounds, sound => sound.name == name);
+
+        if (s == null)
+        {
+            return;
+        }
+
+        s.source.Stop();
+    }
+
+    public IEnumerator FadeTrackIn(string name)
+    {
+        Sound s = Array.Find(sounds, sound => sound.name == name);
+
+        s.source.Play();
+
+        float timeToFade = 5f;
+        float timeElapsed = 0f;
+
+        while(timeElapsed < timeToFade)
+        {
+            s.source.volume = Mathf.Lerp(0, 1, timeElapsed / timeToFade);
+            timeElapsed += Time.deltaTime;
+
+            yield return null;
+        }
+    }
+
+    private IEnumerator FadeTrackOut(string name)
+    {
+        float timeToFade = 5f;
+        float timeElapsed = 0f;
+
+        Sound s = Array.Find(sounds, sound => sound.name == name);
+
+        while (timeElapsed < timeToFade)
+        {
+            s.source.volume = Mathf.Lerp(1, 0, timeElapsed / timeToFade);
+            timeElapsed += Time.deltaTime;
+
+            yield return null;
+        }
+
+        s.source.Pause();
+    }
+
+    private IEnumerator FadeTrackOutAndReset(string name)
+    {
+        float timeToFade = 5f;
+        float timeElapsed = 0f;
+
+        Sound s = Array.Find(sounds, sound => sound.name == name);
+
+        while (timeElapsed < timeToFade)
+        {
+            s.source.volume = Mathf.Lerp(1, 0, timeElapsed / timeToFade);
+            timeElapsed += Time.deltaTime;
+
+            yield return null;
+        }
+
+        s.source.Stop();
     }
 }

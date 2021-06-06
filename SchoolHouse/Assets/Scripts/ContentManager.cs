@@ -88,6 +88,8 @@ public class ContentManager : MonoBehaviour
 
     public bool ExperienceFinished = false;
 
+    public AudioClip T1Music, T2Music, T3Music;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -216,6 +218,18 @@ public class ContentManager : MonoBehaviour
                     //start T1
                     fader.FadeToBlack();
                     NarrativeVisible = true;
+
+                    //Stop music
+                    if (MenuPlaying == true)
+                    {
+                        //FindObjectOfType<AudioController>().StopMusic("StartMenuMusic");
+                        //FindObjectOfType<AudioController>().StopMusic("BackMenuMusic");
+
+                        SoundManager.instance.PlayTrack(T1Music);
+                        T1Playing = true;
+
+                        MenuPlaying = false;
+                    }
                     Invoke("SetUpT1", 3.0f);
                 }
 
@@ -224,6 +238,19 @@ public class ContentManager : MonoBehaviour
                     //start T2
                     fader.FadeToBlack();
                     NarrativeVisible = true;
+
+                    //Stop music
+                    if (MenuPlaying == true)
+                    {
+                        //FindObjectOfType<AudioController>().StopMusic("StartMenuMusic");
+                        //FindObjectOfType<AudioController>().StopMusic("BackMenuMusic");
+
+                        SoundManager.instance.PlayTrack(T2Music);
+                        T2Playing = true;
+
+                        MenuPlaying = false;
+                    }
+
                     Invoke("SetUpT2", 3.0f);
                 }
 
@@ -232,6 +259,19 @@ public class ContentManager : MonoBehaviour
                     //start T3
                     fader.FadeToBlack();
                     NarrativeVisible = true;
+
+                    //Stop music
+                    if (MenuPlaying == true)
+                    {
+                        //FindObjectOfType<AudioController>().StopMusic("StartMenuMusic");
+                        //FindObjectOfType<AudioController>().StopMusic("BackMenuMusic");
+
+                        SoundManager.instance.PlayTrack(T3Music);
+                        T3Playing = true;
+
+                        MenuPlaying = false;
+                    }
+
                     Invoke("SetUpT3", 3.0f);
                 }
             }
@@ -321,6 +361,16 @@ public class ContentManager : MonoBehaviour
                 {
                     fader.FadeToBlack();
                     NarrativeVisible = false;
+
+                    //Stop music
+                    if (T1Playing == true)
+                    {
+                        //FindObjectOfType<AudioController>().StopMusic("T1MenuMusic");
+                        SoundManager.instance.ReturnToMenuMusic();
+
+                        T1Playing = false;
+                    }
+
                     Invoke("SetUpMain", 3.0f);
                     //T1 DONE
                     T1Done = true;
@@ -332,6 +382,16 @@ public class ContentManager : MonoBehaviour
                 {
                     fader.FadeToBlack();
                     NarrativeVisible = false;
+
+                    //Stop music
+                    if (T2Playing == true)
+                    {
+                        //FindObjectOfType<AudioController>().StopMusic("T2MenuMusic");
+                        SoundManager.instance.ReturnToMenuMusic();
+
+                        T2Playing = false;
+                    }
+
                     Invoke("SetUpMain", 3.0f);
                     //T2 DONE
                     T2Done = true;
@@ -343,6 +403,16 @@ public class ContentManager : MonoBehaviour
                 {
                     fader.FadeToBlack();
                     NarrativeVisible = false;
+
+                    //Stop music
+                    if (T3Playing == true)
+                    {
+                        //FindObjectOfType<AudioController>().StopMusic("T3MenuMusic");
+                        SoundManager.instance.ReturnToMenuMusic();
+
+                        T3Playing = false;
+                    }
+
                     Invoke("SetUpMain", 3.0f);
                     //T3 DONE
                     T3Done = true;
@@ -590,13 +660,13 @@ public class ContentManager : MonoBehaviour
                 NarrativePos.transform.localPosition += new Vector3(2.00f, 0, 0);
             }
 
-            if (MenuOption1 == 2)
+            if (MenuOption1 == 2 && CurrentT1Page > 2)
             {
                 CurrentT2Page--;
                 NarrativePos.transform.localPosition += new Vector3(2.00f, 0, 0);
             }
 
-            if (MenuOption1 == 3)
+            if (MenuOption1 == 3 && CurrentT1Page > 3)
             {
                 CurrentT3Page--;
                 NarrativePos.transform.localPosition += new Vector3(2.00f, 0, 0);
@@ -980,7 +1050,8 @@ public class ContentManager : MonoBehaviour
                     //stop background music
                     if (T2Playing == true)
                     {
-                        FindObjectOfType<AudioController>().StopPlaying("T2MenuMusic");
+                        SoundManager.instance.PauseTrack();
+                        //FindObjectOfType<AudioController>().StopMusic("T2MenuMusic");
                         T2Playing = false;
                     }
                 }
@@ -1004,7 +1075,8 @@ public class ContentManager : MonoBehaviour
                     //stop background music
                     if (T3Playing == true)
                     {
-                        FindObjectOfType<AudioController>().StopPlaying("T3MenuMusic");
+                        SoundManager.instance.PauseTrack();
+                        //FindObjectOfType<AudioController>().StopMusic("T3MenuMusic");
                         T3Playing = false;
                     }
                 }
@@ -1030,7 +1102,8 @@ public class ContentManager : MonoBehaviour
                     //play background music
                     if (T2Playing == false)
                     {
-                        FindObjectOfType<AudioController>().Play("T2MenuMusic");
+                        SoundManager.instance.UnPauseTrack();
+                        //FindObjectOfType<AudioController>().PlayMusic("T2MenuMusic");
                         T2Playing = true;
                     }
                 }
@@ -1052,7 +1125,8 @@ public class ContentManager : MonoBehaviour
                     //play background music
                     if (T3Playing == false)
                     {
-                        FindObjectOfType<AudioController>().Play("T3MenuMusic");
+                        SoundManager.instance.UnPauseTrack();
+                        //FindObjectOfType<AudioController>().PlayMusic("T3MenuMusic");
                         T3Playing = true;
                     }
                 }
@@ -1070,17 +1144,6 @@ public class ContentManager : MonoBehaviour
         NarrativeHolder.SetActive(true);
         MainRoom.SetActive(false);
         T1Room.SetActive(true);
-
-        if (MenuPlaying == true)
-        {
-            FindObjectOfType<AudioController>().StopPlaying("StartMenuMusic");
-            FindObjectOfType<AudioController>().StopPlaying("BackMenuMusic");
-
-            MenuPlaying = false;
-        }
-
-        FindObjectOfType<AudioController>().Play("T1MenuMusic");
-        T1Playing = true;
     }
 
     private void SetUpT2()
@@ -1093,17 +1156,6 @@ public class ContentManager : MonoBehaviour
         NarrativeHolder.SetActive(true);
         MainRoom.SetActive(false);
         T2Room.SetActive(true);
-
-        if (MenuPlaying == true)
-        {
-            FindObjectOfType<AudioController>().StopPlaying("StartMenuMusic");
-            FindObjectOfType<AudioController>().StopPlaying("BackMenuMusic");
-
-            MenuPlaying = false;
-        }
-
-        FindObjectOfType<AudioController>().Play("T2MenuMusic");
-        T2Playing = true;
     }
 
     private void SetUpT3()
@@ -1116,17 +1168,6 @@ public class ContentManager : MonoBehaviour
         NarrativeHolder.SetActive(true);
         MainRoom.SetActive(false);
         T3Room.SetActive(true);
-
-        if (MenuPlaying == true)
-        {
-            FindObjectOfType<AudioController>().StopPlaying("StartMenuMusic");
-            FindObjectOfType<AudioController>().StopPlaying("BackMenuMusic");
-
-            MenuPlaying = false;
-        }
-
-        FindObjectOfType<AudioController>().Play("T3MenuMusic");
-        T3Playing = true;
     }
 
     private void SetUpMain()
@@ -1150,25 +1191,6 @@ public class ContentManager : MonoBehaviour
 
         MainRoom.SetActive(true);
 
-        if (T1Playing == true)
-        {
-            FindObjectOfType<AudioController>().StopPlaying("T1MenuMusic");
-            T1Playing = false;
-        }
-
-        if (T2Playing == true)
-        {
-            FindObjectOfType<AudioController>().StopPlaying("T2MenuMusic");
-            T2Playing = false;
-        }
-
-        if (T3Playing == true)
-        {
-            FindObjectOfType<AudioController>().StopPlaying("T3MenuMusic");
-            T3Playing = false;
-        }
-
-        FindObjectOfType<AudioController>().Play("BackMenuMusic");
         MenuPlaying = true;
     }
 
@@ -1229,27 +1251,25 @@ public class ContentManager : MonoBehaviour
         {
             if (T1Playing == true)
             {
-                FindObjectOfType<AudioController>().StopPlaying("T1MenuMusic");
+                SoundManager.instance.StopAndResetTrack();
                 T1Playing = false;
             }
 
             if (T2Playing == true)
             {
-                FindObjectOfType<AudioController>().StopPlaying("T2MenuMusic");
+                SoundManager.instance.StopAndResetTrack();
                 T2Playing = false;
             }
 
             if (T3Playing == true)
             {
-                FindObjectOfType<AudioController>().StopPlaying("T3MenuMusic");
+                SoundManager.instance.StopAndResetTrack();
                 T3Playing = false;
             }
 
             if (MenuPlaying == true)
             {
-                FindObjectOfType<AudioController>().StopPlaying("StartMenuMusic");
-                FindObjectOfType<AudioController>().StopPlaying("BackMenuMusic");
-
+                SoundManager.instance.StopAndResetTrack();
                 MenuPlaying = false;
             }
 
